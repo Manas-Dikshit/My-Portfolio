@@ -4,7 +4,7 @@ import SectionHeading from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import HeadingLine from "@/components/ui/heading-line";
-import env from "@/config/env";
+
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { portfolioData } from "@/lib/portfolio-data";
