@@ -1,3 +1,20 @@
+// Add JSON-LD structured data for SEO
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": portfolioData.personal.name,
+  "url": siteConfig.url,
+  "email": portfolioData.contact.email,
+  "jobTitle": portfolioData.personal.title,
+  "description": portfolioData.personal.bio,
+  "sameAs": [
+    portfolioData.social.github,
+    portfolioData.social.linkedin,
+    portfolioData.social.instagram,
+    portfolioData.social.leetcode,
+    portfolioData.social.gfg
+  ]
+};
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import Providers from "@/components/providers";
@@ -9,7 +26,7 @@ import { portfolioData } from "@/lib/portfolio-data";
 import Script from "next/script";
 import env from "@/config/env";
 import FloatingAvatar from "@/components/floating-avatar";
-// import FloatingAvatar from "@/components/floating-avatar";
+
 
 
 export const metadata: Metadata = {
@@ -43,6 +60,10 @@ export const metadata: Metadata = {
     // twitter handle if provided (expects @handle)
     creator: siteConfig.twitter ? siteConfig.twitter.replace(/https?:\/\//, "") : undefined,
   },
+  // Google site verification
+  other: {
+    "google-site-verification": "googlebde8e6ea00c8a048.html"
+  },
 };
 
 export default function RootLayout({
@@ -72,6 +93,11 @@ export default function RootLayout({
           defer
           src="https://cloud.umami.is/script.js"
           data-website-id={env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+        />
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </body>
     </html>

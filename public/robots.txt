@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://manas-ranjan-dikshit.netlify.app/sitemap.xml
+
+# Portfolio SEO
+Host: https://manas-ranjan-dikshit.netlify.app
