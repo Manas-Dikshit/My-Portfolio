@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         });
 
 
-        if (!session || session.role !== "AUTHOR") {
+        if (!session) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
