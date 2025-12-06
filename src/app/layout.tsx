@@ -5,6 +5,7 @@ import { geistMono, geistSans, incognito, pixelifySans } from "@/assets/fonts";
 import { cn } from "@/lib/utils";
 import MotionConfigWrapper from "@/components/motion-config";
 import { siteConfig } from "@/config/site";
+import { portfolioData } from "@/lib/portfolio-data";
 import Script from "next/script";
 import env from "@/config/env";
 import FloatingAvatar from "@/components/floating-avatar";
@@ -18,21 +19,29 @@ export const metadata: Metadata = {
   keywords: [
     "portfolio",
     "developer portfolio",
-    "creative",
+    "software developer",
     "fullstack",
-    "nextjs",
+    ...portfolioData.skills.map((s) => s.name.toLowerCase()),
+    ...portfolioData.projects.map((p) => p.title.toLowerCase()),
   ],
-
+  authors: [{ name: siteConfig.title }],
   openGraph: {
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: siteConfig.url,
     images: [
       {
         url: "/og-image.png",
-        alt: "Stark's Portfolio",
+        alt: `${siteConfig.title} – ${siteConfig.description}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    // twitter handle if provided (expects @handle)
+    creator: siteConfig.twitter ? siteConfig.twitter.replace(/https?:\/\//, "") : undefined,
   },
 };
 

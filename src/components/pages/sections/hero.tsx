@@ -10,9 +10,10 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowDownSquareIcon, ArrowUpRight, Download } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { portfolioData } from "@/lib/portfolio-data";
 
 const Hero = () => {
-  const { data: umamiStats } = useQuery({
+  const { data: unamiStats } = useQuery({
     queryKey: ["pageViews"],
     queryFn: clientApi.views.getStats,
   });
@@ -59,7 +60,7 @@ const Hero = () => {
               </div>
               <div className="h-px w-12 bg-[#e1e1e1]" />
               <span className="text-foreground/50 font-mono text-xs md:text-sm">
-                Full-Stack Developer
+                Software Engineer & Java Developer
               </span>
             </motion.div>
 
@@ -73,7 +74,8 @@ const Hero = () => {
               <span className="text-foreground">Hey, I&apos;m </span>
               <span className="relative text-[#8cc2ff] italic">
                 <Typewriter
-                  text={["Siddharth", "Stark"]}
+                  // show short and full name variants
+                  text={["MRD", "Manas", portfolioData.personal.name]}
                   speed={85}
                   waitTime={1500}
                   deleteSpeed={40}
@@ -89,8 +91,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-foreground/60 max-w-2xl text-sm font-light md:text-base"
             >
-              Fullstack developer with a passion for building web applications.
-              I specialize in React, Next.js, Node.js, and TypeScript.
+              {portfolioData.personal.bio}
             </motion.p>
 
             <motion.div
@@ -115,7 +116,7 @@ const Hero = () => {
                 size="lg"
                 className="group/btn border-2 font-medium"
               >
-                <Link href={"/resume.pdf"}>
+                <Link href={portfolioData.personal.cvUrl}>
                   <Download className="size-4 transition-transform group-hover/btn:translate-y-0.5" />
                   Download resume
                 </Link>
@@ -131,11 +132,23 @@ const Hero = () => {
           {[
             {
               label: "Portfolio views",
-              value: umamiStats?.data?.pageviews ?? 0,
+              value: unamiStats?.data?.pageviews ?? 0,
             },
-            { label: "Years of Experience", value: 2 },
-            { label: "Projects Shipped", value: 8 },
-            { label: "Happy Clients", value: 5 },
+            {
+              label: "Years of Experience",
+              value:
+                parseInt((portfolioData.personal.stats.experience as unknown as string) || "0") || 0,
+            },
+            {
+              label: "Projects Shipped",
+              value:
+                parseInt((portfolioData.personal.stats.projects as unknown as string) || "0") || 0,
+            },
+            {
+              label: "Happy Clients",
+              value:
+                parseInt((portfolioData.personal.stats.clients as unknown as string) || "0") || 0,
+            },
           ].map((stat, i) => (
             <div
               key={i}

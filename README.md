@@ -1,102 +1,108 @@
-
-# Stark's Portfolio
+# Manas Ranjan Dikshit — Portfolio
 
 ![Portfolio Screenshot](public/projects/portfolio-screenshot.png)
 
-A modern, interactive **[developer portfolio](https://next-portfolio-stark.vercel.app)** built with **Next.js 15**, **Prisma**, and **shadcn/ui**
+A modern, interactive developer portfolio built with Next.js 15, TypeScript, Tailwind, Prisma, shadcn/ui, and Framer Motion.
 
-> This portfolio showcases my work, my projects, and my personality
+This site showcases my projects, experience, skills, and a playful UI — all driven by a single data file.
 
 ---
 
 ## Tech Stack
 
-**Framework & Runtime**
-- [Next.js 15](https://nextjs.org/) — UI Framework
-- [TypeScript 5](https://www.typescriptlang.org/) — For type safety
-
-**Styling & UI**
-- [Tailwind CSS 4](https://tailwindcss.com/) — For Styling
-- [shadcn/ui](https://ui.shadcn.com/) — for accessible components
-- [Lucide Icons](https://lucide.dev/) — for Icon
-- [Framer Motion (motion)](https://motion.dev/) — for animation
-
-**Backend & Data**
-- [Prisma ORM 6](https://www.prisma.io/) 
-- [Better Auth](https://better-auth.dev/)
-- [Zod](https://zod.dev/) — for runtime schema validation
-- [Umami](https://umami.is/) — Analytics
-
-**State & Utilities**
-- [Zustand](https://github.com/pmndrs/zustand)
-- [TanStack Query](https://tanstack.com/query)
-- [Day.js](https://day.js.org/)
-- [Lodash](https://lodash.com/)
+- Next.js 15, TypeScript 5
+- Tailwind CSS 4, shadcn/ui, Lucide Icons
+- Framer Motion (motion.dev)
+- Prisma ORM 6, Zod, Better Auth
+- TanStack Query, Zustand, Day.js, Lodash
+- Umami (optional analytics)
 
 ---
 
+## Content: edit in one place
 
-## Run Project Locally
+All portfolio content lives in `src/lib/portfolio-data.ts`.
 
-### Clone the repository
-```bash
-git clone https://github.com/NotStark/portfolio.git
-cd portfolio
-````
+- Personal: name, title, bio, resume URL
+- Social + Contact
+- Education & Experience
+- Projects (title, description, images, tech, links)
+- Skills (name + level)
+- Achievements
 
-### Install dependencies 
+Sections like Hero, Projects, About, Stats, Testimonials, and Footer read from this file without changing the component structure.
+
+---
+
+## Run locally
+
+Prereqs: Node 18+ and npm.
+
+1) Install
 
 ```bash
 npm install
 ```
 
-### Set up environment variables
+2) Environment (optional but recommended for live GitHub/analytics)
 
-Create a `.env` & copy the variables from `.env.example` file in the root and configure it.
+Create `.env.local` at project root. For my profile:
 
-### Generate Prisma Client
+```bash
+NEXT_PUBLIC_GITHUB_USERNAME=Manas-Dikshit
+# Optional: enables authenticated GitHub GraphQL for richer stats
+GITHUB_TOKEN=
+
+# Optional: Umami analytics (or leave empty to show 0 values)
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=
+UMAMI_API_KEY=
+```
+
+The app gracefully falls back to zeroed stats if these are not set.
+
+3) Prisma client (only needed if you use DB-backed features)
 
 ```bash
 npx prisma generate
 ```
 
-### Run the development server
+4) Start dev server
 
 ```bash
 npm run dev
 ```
 
-> Your portfolio should now be live at **[http://localhost:3000](http://localhost:3000)** 🎉
+Visit http://localhost:3000
 
 ---
 
-## Deployment
+## Deploy
 
-Deployed easily via [Vercel](https://vercel.com/) (recommended).
+Deploy on Vercel (recommended):
 
-1. Connect your GitHub repository.
-2. Add your environment variables in the Vercel dashboard.
-3. Deploy → done!
+1. Push this repo to GitHub
+2. Import the repo in Vercel
+3. Add the environment variables in Project Settings (optional)
+4. Deploy
 
 ---
 
-## Connect With Me
+## Connect with me
 
-| Platform     | Link                                                             |
-| ------------ | ---------------------------------------------------------------- |
-| 💬 Telegram  | [https://t.me/EternalVortex](https://t.me/EternalVortex)      
-| 🐦 Twitter   | [https://twitter.com/NotStark101](https://twitter.com/NotStark101) |         |
-| 💻 Discord   | `_notstark`                                            |
-              
+| Platform   | Link |
+| ---------- | ----- |
+| GitHub     | https://github.com/Manas-Dikshit |
+| LinkedIn   | https://www.linkedin.com/in/manas-ranjan-dikshit |
+| Instagram  | https://www.instagram.com/manasss01_?igsh=aXYxZXdjN3IwMzY3 |
+| Email      | mailto:manasdikshit48@gmail.com |
+
 ---
 
+## Notes
 
+- GitHub stats: If `GITHUB_TOKEN` is not set, the site returns a safe, empty stats payload so the UI never breaks.
+- Portfolio views (Umami): Without keys, the card shows 0 visits.
+- Projects section: reads from `portfolio-data.ts` and preserves the original card layout.
 
-## Star History
-**⭐ If you liked this project, give it a star — it helps a lot!**
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Notstark/Portfolio&type=Date&theme=dark" />
-  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Notstark/Portfolio&type=Date" />
-  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Notstark/Portfolio&type=Date" />
-</picture>
+If you like this project, feel free to fork it and make it yours! :)
 

@@ -1,15 +1,16 @@
+import { portfolioData } from "@/lib/portfolio-data";
 import env from "./env";
 
 
 
 export const siteConfig = {
-    title: "Siddharth Sharma",
-    description: "my personal portfolio website showcasing projects, skills, and other cool stuffs",
+    title: portfolioData.personal.name,
+    description: portfolioData.personal.bio,
     url: env.NEXT_PUBLIC_APP_URL,
-    twitter: "https://x.com/NotStark101",
-    linkedin: "https://www.linkedin.com/404",
-    github: `https://github.com/${env.NEXT_PUBLIC_GITHUB_USERNAME}`,
-    email: "yeahamstark@gmail.com",
+    twitter: portfolioData.social.instagram,
+    linkedin: portfolioData.social.linkedin,
+    github: portfolioData.social.github,
+    email: portfolioData.contact.email,
     telegram: "https://t.me/EternalVortex"
 
 }

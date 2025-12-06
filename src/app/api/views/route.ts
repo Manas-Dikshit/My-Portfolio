@@ -10,6 +10,24 @@ export async function GET() {
     const endAt = Date.now();
 
     try {
+        if (!env.NEXT_PUBLIC_UMAMI_WEBSITE_ID || !env.UMAMI_API_KEY) {
+            // Graceful fallback when Umami isn't configured
+            const data = {
+                pageviews: 0,
+                visitors: 0,
+                visits: 0,
+                bounces: 0,
+                totaltime: 0,
+                comparison: {
+                    pageviews: 0,
+                    visitors: 0,
+                    visits: 0,
+                    bounces: 0,
+                    totaltime: 0,
+                },
+            };
+            return NextResponse.json({ success: true, data });
+        }
         const res = await axios.get(
             `https://api.umami.is/v1/websites/${env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}/stats?startAt=${startAt}&endAt=${endAt}`,
             {
@@ -28,9 +46,21 @@ export async function GET() {
         return NextResponse.json({ success: true, data });
     } catch (err) {
         console.log("Error fetching website stats:", err);
-        return NextResponse.json(
-            { success: false, message: "Failed to fetch website stats" },
-            { status: 500 }
-        );
+        // Graceful fallback on runtime errors
+        const data = {
+            pageviews: 0,
+            visitors: 0,
+            visits: 0,
+            bounces: 0,
+            totaltime: 0,
+            comparison: {
+                pageviews: 0,
+                visitors: 0,
+                visits: 0,
+                bounces: 0,
+                totaltime: 0,
+            },
+        };
+        return NextResponse.json({ success: true, data });
     }
 }

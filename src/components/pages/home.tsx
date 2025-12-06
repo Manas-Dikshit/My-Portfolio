@@ -173,7 +173,8 @@ const MainScreen: React.FC<{
           <>
             Hi! , I am{" "}
             <Typewriter
-              text={["a developer", "Siddharth", "Stark"]}
+              // include both MRD and Manas in the rotation
+              text={["an Engineer", "MRD", "Manas"]}
               speed={70}
               waitTime={1500}
               deleteSpeed={40}

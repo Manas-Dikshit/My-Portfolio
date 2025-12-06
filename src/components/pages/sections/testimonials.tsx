@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { portfolioData } from "@/lib/portfolio-data";
 
 import SectionHeading from "@/components/section-heading";
 
@@ -16,14 +17,14 @@ const testimonials = [
     testimonial:
       "My favorite solution in the market. We work 5x faster with COMPANY.",
     by: "Alex, CEO at TechCorp",
-    imgSrc: "https://i.pinimg.com/736x/d0/7c/49/d07c49daf805a6ac87f0eea9219b0aa0.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=1",
   },
   {
     tempId: 1,
     testimonial:
       "I'm confident my data is safe with COMPANY. I can't say that about other providers.",
     by: "Dan, CTO at SecureNet",
-    imgSrc: "https://i.pinimg.com/736x/85/02/f9/8502f933d53e85928d80a057118b23f8.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=2",
   },
   {
     tempId: 2,
@@ -37,118 +38,125 @@ const testimonials = [
     testimonial:
       "COMPANY's products make planning for the future seamless. Can't recommend them enough!",
     by: "Marie, CFO at FuturePlanning",
-    imgSrc: "https://i.pinimg.com/1200x/75/1b/9a/751b9a98a29c605f70ef79db4d8d830d.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=4",
   },
   {
     tempId: 4,
     testimonial: "If I could give 11 stars, I'd give 12.",
     by: "Andre, Head of Design at CreativeSolutions",
-    imgSrc: "https://i.pinimg.com/1200x/fd/95/c6/fd95c6691dde3badcb885ec90bfb434d.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=5",
   },
   {
     tempId: 5,
     testimonial:
       "SO SO SO HAPPY WE FOUND YOU GUYS!!!! I'd bet you've saved me 100 hours so far.",
     by: "Jeremy, Product Manager at TimeWise",
-    imgSrc: "https://i.pinimg.com/1200x/9c/3f/e2/9c3fe2ebba4bfb6cf764dd134cc59393.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=6",
   },
   {
     tempId: 6,
     testimonial:
       "Took some convincing, but now that we're on COMPANY, we're never going back.",
     by: "Pam, Marketing Director at BrandBuilders",
-    imgSrc: "https://i.pinimg.com/736x/0c/bc/be/0cbcbe2f76be27e6ebff714a88f51a12.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=7",
   },
   {
     tempId: 7,
     testimonial:
       "I would be lost without COMPANY's in-depth analytics. The ROI is EASILY 100X for us.",
     by: "Daniel, Data Scientist at AnalyticsPro",
-    imgSrc: "https://i.pinimg.com/736x/fe/28/df/fe28dfd986cf67d2749123215264b5d4.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=8",
   },
   {
     tempId: 8,
     testimonial: "It's just the best. Period.",
     by: "Fernando, UX Designer at UserFirst",
-    imgSrc: "https://i.pinimg.com/736x/37/b5/19/37b5190c8d742c432bf324c36aea9652.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=9",
   },
   {
     tempId: 9,
     testimonial: "I switched 5 years ago and never looked back.",
     by: "Andy, DevOps Engineer at CloudMasters",
-    imgSrc: "https://i.pinimg.com/1200x/17/3f/f2/173ff21047fa18aa7808c9108746e849.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=10",
   },
   {
     tempId: 10,
     testimonial:
       "I've been searching for a solution like COMPANY for YEARS. So glad I finally found one!",
     by: "Pete, Sales Director at RevenueRockets",
-    imgSrc: "https://i.pinimg.com/1200x/2b/a0/0e/2ba00e6ae36c1369eaee848fa8ec5736.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=11",
   },
   {
     tempId: 11,
     testimonial:
       "It's so simple and intuitive, we got the team up to speed in 10 minutes.",
     by: "Marina, HR Manager at TalentForge",
-    imgSrc: "https://i.pinimg.com/1200x/a4/70/95/a470951ac14a056414ddd454c2ae7735.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=12",
   },
   {
     tempId: 12,
     testimonial:
       "COMPANY's customer support is unparalleled. They're always there when we need them.",
     by: "Olivia, Customer Success Manager at ClientCare",
-    imgSrc: "https://i.pinimg.com/736x/5c/65/12/5c6512d83e3cf41831b4f40ad7dac62c.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=13",
   },
   {
     tempId: 13,
     testimonial:
       "The efficiency gains we've seen since implementing COMPANY are off the charts!",
     by: "Raj, Operations Manager at StreamlineSolutions",
-    imgSrc: "https://i.pinimg.com/736x/cf/87/9f/cf879fae9c6d19fec30dbc1d069ab2e4.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=14",
   },
   {
     tempId: 14,
     testimonial:
       "COMPANY has revolutionized how we handle our workflow. It's a game-changer!",
     by: "Lila, Workflow Specialist at ProcessPro",
-    imgSrc: "https://i.pinimg.com/736x/7f/a0/a8/7fa0a8cfc2557ac9c961ff879306da51.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=15",
   },
   {
     tempId: 15,
     testimonial:
       "The scalability of COMPANY's solution is impressive. It grows with our business seamlessly.",
     by: "Trevor, Scaling Officer at GrowthGurus",
-    imgSrc: "https://i.pinimg.com/736x/7e/f3/8e/7ef38e36475e40e8dd8a34cbf5ee9acb.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=16",
   },
   {
     tempId: 16,
     testimonial:
       "I appreciate how COMPANY continually innovates. They're always one step ahead.",
     by: "Naomi, Innovation Lead at FutureTech",
-    imgSrc: "https://i.pinimg.com/736x/6b/22/4b/6b224bb76fcb2c3a842bcdc04be9d336.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=17",
   },
   {
     tempId: 17,
     testimonial:
       "The ROI we've seen with COMPANY is incredible. It's paid for itself many times over.",
     by: "Victor, Finance Analyst at ProfitPeak",
-    imgSrc: "https://i.pinimg.com/736x/8e/69/06/8e6906941f1ac05eda7ab5ba948e0aae.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=18",
   },
   {
     tempId: 18,
     testimonial:
       "COMPANY's platform is so robust, yet easy to use. It's the perfect balance.",
     by: "Yuki, Tech Lead at BalancedTech",
-    imgSrc: "https://i.pinimg.com/736x/f1/53/0b/f1530b991ef2f9b1e7f0e0348d39232b.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=19",
   },
   {
     tempId: 19,
     testimonial:
       "We've tried many solutions, but COMPANY stands out in terms of reliability and performance.",
     by: "Zoe, Performance Manager at ReliableSystems",
-    imgSrc: "https://i.pinimg.com/736x/f9/a3/a7/f9a3a7332fe51f3dc25a71fe7cb81b7f.jpg",
+    imgSrc: "https://i.pravatar.cc/150?img=20",
   },
 ];
+
+const achievementsAsTestimonials = portfolioData.achievements.map((a, idx) => ({
+  tempId: 1000 + idx,
+  testimonial: a.title,
+  by: a.organization,
+  imgSrc: `https://i.pravatar.cc/150?img=${(idx % 70) + 21}`,
+}));
 
 interface TestimonialCardProps {
   position: number;
@@ -228,7 +236,10 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
 export const Testimonials: React.FC = () => {
   const [cardSize, setCardSize] = useState(365);
-  const [testimonialsList, setTestimonialsList] = useState(testimonials);
+  // Show only user's achievements (awards) as testimonials
+  const [testimonialsList, setTestimonialsList] = useState([
+    ...achievementsAsTestimonials,
+  ]);
 
   const handleMove = (steps: number) => {
     const newList = [...testimonialsList];
@@ -261,7 +272,7 @@ export const Testimonials: React.FC = () => {
 
   return (
     <SectionHeading
-      text="Testimonials"
+      text="Achievements"
       id="testimonials"
       className="h-[600px] overflow-hidden"
     >

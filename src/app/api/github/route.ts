@@ -192,6 +192,195 @@ class GitHubStatsCalculator {
 }
 
 
+// ----- Public fallback (no token required) -----
+async function fetchPublicUser(username: string) {
+  const headers = { Accept: 'application/vnd.github+json' };
+  const { data } = await axios.get(`https://api.github.com/users/${username}`, { headers });
+  return data as {
+    public_repos: number;
+    followers: number;
+  };
+}
+
+async function fetchPublicRepos(username: string) {
+  const headers = { Accept: 'application/vnd.github+json' };
+  const { data } = await axios.get(
+    `https://api.github.com/users/${username}/repos?per_page=100&type=owner&sort=created&direction=desc`,
+    { headers },
+  );
+  return data as Array<{
+    fork: boolean;
+    stargazers_count: number;
+    created_at: string;
+    language: string | null;
+  }>;
+}
+
+async function fetchPublicFollowers(username: string) {
+  const headers = { Accept: 'application/vnd.github+json' };
+  const { data } = await axios.get(
+    `https://api.github.com/users/${username}/followers?per_page=10`,
+    { headers },
+  );
+  return (data as Array<{ login: string; avatar_url: string; html_url: string }>).map((f) => ({
+    login: f.login,
+    avatarUrl: f.avatar_url,
+    url: f.html_url,
+  }));
+}
+
+async function searchCount(q: string) {
+  const headers = { Accept: 'application/vnd.github+json' };
+  const { data } = await axios.get(`https://api.github.com/search/issues?q=${encodeURIComponent(q)}`, { headers });
+  return (data?.total_count as number) || 0;
+}
+
+async function fetchPublicPRAndIssueStats(username: string) {
+  // Pull requests
+  const prTotal = await searchCount(`type:pr author:${username}`);
+  const prMerged = await searchCount(`is:pr is:merged author:${username}`);
+  const prOpen = await searchCount(`is:pr is:open author:${username}`);
+  const prClosedAll = await searchCount(`is:pr is:closed author:${username}`);
+  const prClosed = Math.max(prClosedAll - prMerged, 0);
+
+  // Issues
+  const issuesTotal = await searchCount(`is:issue author:${username}`);
+  const issuesOpen = await searchCount(`is:issue is:open author:${username}`);
+  const issuesClosed = await searchCount(`is:issue is:closed author:${username}`);
+
+  return {
+    pr: { total: prTotal, open: prOpen, closed: prClosed, merged: prMerged },
+    issues: { total: issuesTotal, open: issuesOpen, closed: issuesClosed },
+  };
+}
+
+async function fetchPublicEvents(username: string) {
+  const headers = { Accept: 'application/vnd.github+json' };
+  const { data } = await axios.get(
+    `https://api.github.com/users/${username}/events/public?per_page=100`,
+    { headers },
+  );
+  return data as Array<{ type: string; created_at: string; payload?: { size?: number } }>;
+}
+
+async function fetchContributionDays(username: string) {
+  const year = dayjs().year();
+  const url = `https://github.com/users/${username}/contributions?from=${year}-01-01&to=${year}-12-31`;
+  const { data: html } = await axios.get(url, { headers: { Accept: 'text/html' } });
+  const regex = /data-date="(\d{4}-\d{2}-\d{2})"[^>]*data-count="(\d+)"/g;
+  const days: Array<{ date: string; contributionCount: number; color: string }> = [];
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(html))) {
+    const date = match[1];
+    const count = parseInt(match[2], 10) || 0;
+    days.push({ date, contributionCount: count, color: '#9be9a8' });
+  }
+  // Group into weeks by week start (Sunday)
+  const weeksMap = new Map<string, { firstDay: string; contributionDays: { date: string; color: string; contributionCount: number }[] }>();
+  for (const d of days) {
+    const first = dayjs(d.date).startOf('week').format('YYYY-MM-DD');
+    const arr = weeksMap.get(first) || { firstDay: first, contributionDays: [] };
+    arr.contributionDays.push({ date: d.date, color: d.color, contributionCount: d.contributionCount });
+    weeksMap.set(first, arr);
+  }
+  const weeks = Array.from(weeksMap.values())
+    .sort((a, b) => (a.firstDay < b.firstDay ? -1 : 1))
+    .map((w) => ({
+      firstDay: w.firstDay,
+      contributionDays: w.contributionDays.sort((a, b) => (a.date < b.date ? -1 : 1)),
+    }));
+
+  return {
+    colors: [],
+    totalContributions: days.reduce((s, d) => s + d.contributionCount, 0),
+    months: [],
+    weeks,
+  };
+}
+
+async function buildPublicStats(username: string): Promise<GitHubStatsResponse> {
+  const [user, repos, followers, prIssue, events] = await Promise.all([
+    fetchPublicUser(username),
+    fetchPublicRepos(username),
+    fetchPublicFollowers(username),
+    fetchPublicPRAndIssueStats(username),
+    fetchPublicEvents(username),
+  ]);
+
+  // languages
+  const langMap = new Map<string, { count: number }>();
+  for (const r of repos) {
+    if (r.language) {
+      const o = langMap.get(r.language) || { count: 0 };
+      o.count += 1;
+      langMap.set(r.language, o);
+    }
+  }
+  const totalLang = Array.from(langMap.values()).reduce((s, v) => s + v.count, 0) || 1;
+  const topLanguages: Language[] = Array.from(langMap.entries())
+    .map(([name, v]) => ({ name, color: '#3b82f6', percentage: Math.round((v.count / totalLang) * 100) }))
+    .sort((a, b) => b.percentage - a.percentage)
+    .slice(0, 3);
+
+  const totalStars = repos.reduce((s, r) => s + (r.stargazers_count || 0), 0);
+  const repoTypes = repos.reduce(
+    (acc, r) => {
+      if (r.fork) acc.forked += 1; else acc.original += 1; return acc;
+    },
+    { original: 0, forked: 0 },
+  );
+
+  // Weekly trends (approx):
+  const sevenDaysAgo = dayjs().subtract(7, 'day');
+  const weeklyRepos = repos.filter((r) => dayjs(r.created_at).isAfter(sevenDaysAgo)).length;
+  // Contributions from events (PushEvent count size)
+  const weeklyContrib = events
+    .filter((e) => dayjs(e.created_at).isAfter(sevenDaysAgo) && e.type === 'PushEvent')
+    .reduce((sum, e) => sum + (e.payload?.size || 0), 0);
+  const weeklyPRs = await searchCount(`type:pr author:${username} created:>=${sevenDaysAgo.format('YYYY-MM-DD')}`);
+
+  const contributionsCalendar = await fetchContributionDays(username);
+
+  const streaks = GitHubStatsCalculator.calculateStreaks(contributionsCalendar.weeks as Week[]);
+  const highest = GitHubStatsCalculator.calculateHighestCommitDay(contributionsCalendar.weeks as Week[]);
+
+  return {
+    contributionsCollection: { contributionCalendar: contributionsCalendar },
+    totalRepositories: user.public_repos,
+    totalStars,
+    followers: { totalCount: followers.length, nodes: followers },
+    topLanguages,
+      // Total contributions (numeric) from the contribution calendar
+      contributions: contributionsCalendar.totalContributions,
+    pullRequests: {
+      total: prIssue.pr.total,
+      open: prIssue.pr.open,
+      closed: prIssue.pr.closed,
+      merged: prIssue.pr.merged,
+    },
+    issues: {
+      total: prIssue.issues.total,
+      open: prIssue.issues.open,
+      closed: prIssue.issues.closed,
+    },
+    currentStreak: streaks.current,
+    longestStreak: streaks.longest,
+    highestCommitDay: highest,
+    repositories: {
+      total: user.public_repos,
+      original: repoTypes.original,
+      forked: repoTypes.forked,
+    },
+    weeklyTrends: {
+      repositories: GitHubStatsCalculator.calculateTrend(weeklyRepos, user.public_repos),
+      stars: { value: 0, percentage: 0, isPositive: false }, // not available without many requests
+      contributions: GitHubStatsCalculator.calculateTrend(weeklyContrib, contributionsCalendar.totalContributions),
+      pullRequests: GitHubStatsCalculator.calculateTrend(weeklyPRs, prIssue.pr.total),
+    },
+  };
+}
+
+
 const GITHUB_GRAPHQL_QUERY = `
   query($username: String!) {
     user(login: $username) {
@@ -257,6 +446,14 @@ const GITHUB_GRAPHQL_QUERY = `
 
 export async function GET() {
   try {
+    // If no token configured, build stats from public GitHub endpoints (no secrets required)
+    if (!env.GITHUB_TOKEN) {
+      if (!env.NEXT_PUBLIC_GITHUB_USERNAME) {
+        return NextResponse.json({ success: false, message: 'NEXT_PUBLIC_GITHUB_USERNAME is not set' }, { status: 400 });
+      }
+      const stats = await buildPublicStats(env.NEXT_PUBLIC_GITHUB_USERNAME);
+      return NextResponse.json({ success: true, data: stats, message: 'Fetched public GitHub stats' });
+    }
 
     const response = await axios.post('https://api.github.com/graphql', {
       query: GITHUB_GRAPHQL_QUERY,
@@ -264,6 +461,7 @@ export async function GET() {
     }, {
       headers: {
         Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github+json',
       },
     });
 
@@ -333,7 +531,7 @@ export async function GET() {
         })),
       },
       topLanguages,
-      contributions: totalContrib,
+    contributions: totalContrib,
       pullRequests: {
         total: totalPRs,
         open: prStates.open,
@@ -359,9 +557,15 @@ export async function GET() {
     return NextResponse.json({ success: true, data: stats, message: "Successfully fetched GitHub statistics" });
   } catch (err) {
     console.error('Failed to fetch GitHub statistics:', (err as Error).message)
-    return NextResponse.json(
-      { success: false, message: 'Failed to fetch GitHub statistics', },
-      { status: 500 }
-    );
+    // Try public fallback if username exists
+    try {
+      if (env.NEXT_PUBLIC_GITHUB_USERNAME) {
+        const stats = await buildPublicStats(env.NEXT_PUBLIC_GITHUB_USERNAME);
+        return NextResponse.json({ success: true, data: stats, message: 'Fetched public GitHub stats (fallback)' });
+      }
+    } catch (e) {
+      console.error('Public fallback failed:', (e as Error).message)
+    }
+    return NextResponse.json({ success: false, message: 'Failed to fetch GitHub statistics' }, { status: 500 });
   }
 }

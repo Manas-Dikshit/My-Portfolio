@@ -50,6 +50,7 @@ import { clientApi } from "@/lib/client-api";
 import { BackgroundGridAnimated } from "@/components/shared/backgrounds";
 import { useTheme } from "next-themes";
 import dayjs from "dayjs";
+import { portfolioData } from "@/lib/portfolio-data";
 
 const GITHUB_JOIN_YEAR = 2023;
 
@@ -401,6 +402,39 @@ const OverviewContent = ({ data }: { data?: GitHubStatsResponse }) => {
       </div>
 
       <TechStackCard />
+
+      {/* Skills (from portfolio data) */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="bg-muted/30 relative mt-4 rounded-xl border-2 p-6"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-semibold">Skills</h3>
+          <div className="bg-muted rounded-lg border-2 p-2">
+            <Code2 className="text-muted-foreground h-4 w-4" />
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {portfolioData.skills.map((skill, i) => (
+            <div key={skill.name} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">{skill.name}</span>
+                <span className="text-muted-foreground text-xs">{skill.level}%</span>
+              </div>
+              <div className="bg-muted h-2 rounded-full">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${skill.level}%` }}
+                  transition={{ delay: i * 0.05, duration: 0.6 }}
+                  className="bg-green-400 h-2 rounded-full"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 };
@@ -476,7 +510,7 @@ const ActivityContent = ({ data }: { data?: GitHubStatsResponse }) => {
         <div className="overflow-x-auto">
           <div className="max-h-fit max-w-fit">
             <GitHubCalendar
-              username={env.NEXT_PUBLIC_GITHUB_USERNAME}
+              username={env.NEXT_PUBLIC_GITHUB_USERNAME || ""}
               colorScheme={(resolvedTheme as "light" | "dark") ?? "dark"}
               blockSize={13}
               year={selectedYear}

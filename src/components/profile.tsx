@@ -1,5 +1,9 @@
+"use client";
+
 import { PixelImage } from "./ui/pixel-image";
 import { motion } from "motion/react";
+import { portfolioData } from "@/lib/portfolio-data";
+import { Badge } from "./ui/badge";
 
 export const ArrowIcon: React.FC<{ className?: string }> = ({ className }) => {
   return (
@@ -64,6 +68,22 @@ const Profile = () => {
           Vision
         </span>
         <ArrowIcon className="w-18 scale-x-[-1] -rotate-180 md:w-20" />
+      </div>
+
+      {/* Tech stack badges (non-intrusive) */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[220px] md:w-[260px]">
+        <div className="rounded-lg bg-background/80 p-2 shadow-lg backdrop-blur-sm">
+          <div className="mb-1 text-center text-xs font-mono text-muted-foreground">
+            Tech Stack
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {portfolioData.skills.slice(0, 8).map((s) => (
+              <Badge key={s.name} variant="outline" className="text-[10px]">
+                {s.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { HyperText } from "./ui/hyper-text";
 import { cn } from "@/lib/utils";

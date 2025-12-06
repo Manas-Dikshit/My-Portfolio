@@ -1,7 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { XIcon, MenuIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
+import {
+  XIcon,
+  MenuIcon,
+  Volume2Icon,
+  VolumeXIcon,
+  GithubIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggleButton2 } from "../../theme-toggle";
 import { Logo } from "../../ui/logo";
@@ -10,6 +16,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/config/site";
 import { useIsSoundEnabled } from "@/store/use-sound-enabled";
 
+/* -------------------------------
+   🔗 Config
+--------------------------------*/
 const NAV_LINKS = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
@@ -20,30 +29,36 @@ const NAV_LINKS = [
 
 type NavId = (typeof NAV_LINKS)[number]["id"];
 
+/* -------------------------------
+   🧭 Navbar Component
+--------------------------------*/
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<NavId>("home");
+
   const { isSoundEnabled, toggleSoundEnabled } = useIsSoundEnabled();
   const { resolvedTheme, setTheme } = useTheme();
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const activeTabRef = useRef<HTMLAnchorElement | null>(null);
 
-  // Update active tab from URL hash
+  /* --------------------------------
+     Hash Sync for Active Tab
+  --------------------------------*/
   useEffect(() => {
     const ids = NAV_LINKS.map((x) => x.id);
     const setFromHash = () => {
-      const hash =
-        (typeof window !== "undefined" && window.location.hash) || "";
-      const id = (hash.replace("#", "") || "home") as NavId;
-      setActive(ids.includes(id) ? id : "home");
+      const hash = window?.location?.hash?.replace("#", "") || "home";
+      setActive(ids.includes(hash as NavId) ? (hash as NavId) : "home");
     };
     setFromHash();
     window.addEventListener("hashchange", setFromHash);
     return () => window.removeEventListener("hashchange", setFromHash);
   }, []);
 
-  // Compute clip-path for animated tabs highlight
+  /* --------------------------------
+     Active Tab Clip Animation
+  --------------------------------*/
   const updateClip = () => {
     const container = overlayRef.current;
     const target = activeTabRef.current;
@@ -52,23 +67,16 @@ const Navbar = () => {
     const cRect = container.getBoundingClientRect();
     const tRect = target.getBoundingClientRect();
 
-    // Position of the active tab relative to the overlay container
-    let left = tRect.left - cRect.left;
-    let right = cRect.right - tRect.right;
-
-    // Small padding so the highlight looks cushioned
     const pad = 6;
-    left = Math.max(0, left - pad);
-    right = Math.max(0, right - pad);
+    const left = Math.max(0, tRect.left - cRect.left - pad);
+    const right = Math.max(0, cRect.right - tRect.right - pad);
 
-    const leftPct = (left / cRect.width) * 100;
-    const rightPct = (right / cRect.width) * 100;
-
-    container.style.clipPath = `inset(0 ${rightPct.toFixed(2)}% 0 ${leftPct.toFixed(2)}% round 17px)`;
+    container.style.clipPath = `inset(0 ${((right / cRect.width) * 100).toFixed(
+      2
+    )}% 0 ${((left / cRect.width) * 100).toFixed(2)}% round 17px)`;
   };
 
   useEffect(() => {
-    // Update after layout settles
     const id = requestAnimationFrame(updateClip);
     window.addEventListener("resize", updateClip);
     return () => {
@@ -82,52 +90,58 @@ const Navbar = () => {
     setOpen(false);
   };
 
+  /* --------------------------------
+     JSX
+  --------------------------------*/
   return (
-    <nav className="w-full border-b px-4 py-2.5 md:px-8" id="home">
+    <nav
+      id="home"
+      className="sticky top-0 z-50 w-full border-b bg-background/80 px-4 py-2.5 backdrop-blur-xl md:px-8"
+    >
       <div className="flex items-center justify-between gap-4">
         {/* Logo */}
         <a
           href="#home"
-          className="group relative inline-flex items-center"
           onClick={() => handleNavClick("home")}
+          className="group relative inline-flex items-center"
         >
           <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 duration-200 group-hover:-top-1 group-hover:-left-1" />
           <Logo className="w-14" hover />
           <div className="absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2 duration-200 group-hover:-right-1 group-hover:-bottom-1" />
         </a>
 
-        {/* Desktop Nav */}
-        <div className="bg-background/50 font-incognito relative hidden items-center backdrop-blur-sm md:flex">
-          {/* Overlay layer  */}
+        {/* Desktop Navigation */}
+        <div className="relative hidden items-center md:flex">
+          {/* Overlay Highlight */}
           <div
             ref={overlayRef}
-            className="pointer-events-none absolute inset-1.5 z-10 w-full overflow-hidden rounded-full [clip-path:inset(0px_75%_0px_0%_round_17px)] [transition:clip-path_0.25s_ease]"
+            className="pointer-events-none absolute inset-1.5 z-10 w-full overflow-hidden rounded-full [clip-path:inset(0_75%_0_0_round_17px)] [transition:clip-path_0.25s_ease]"
           >
             <div className="bg-foreground/10 relative flex gap-1 rounded-full border px-2 py-1">
               {NAV_LINKS.map((x) => (
-                <div
+                <span
                   key={x.id}
-                  className="text-foreground flex items-center rounded-full px-4 py-1.5 text-sm font-medium opacity-0"
+                  className="invisible px-4 py-1.5 text-sm font-medium"
                 >
                   {x.label}
-                </div>
+                </span>
               ))}
             </div>
           </div>
 
-          {/* Clickable layer */}
-          <div className="relative z-20 flex items-center gap-1 rounded-full border px-4 py-1.5">
+          {/* Interactive Layer */}
+          <div className="relative z-20 flex items-center gap-1 rounded-full border bg-background/50 px-4 py-1.5 backdrop-blur-sm">
             {NAV_LINKS.map((x) => {
               const isActive = x.id === active;
               return (
                 <a
                   key={x.id}
-                  ref={isActive ? activeTabRef : null}
                   href={`#${x.id}`}
+                  ref={isActive ? activeTabRef : null}
                   onClick={() => handleNavClick(x.id)}
                   className={cn(
-                    "relative rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200",
-                    isActive ? "" : "opacity-70 hover:opacity-100",
+                    "relative rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40",
+                    isActive ? "text-foreground" : "opacity-70 hover:opacity-100"
                   )}
                 >
                   {x.label}
@@ -137,7 +151,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Right Actions */}
+        {/* Actions (Sound / Theme / GitHub / Menu) */}
         <div className="inline-flex items-center gap-3">
           <div className="bg-background/50 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 backdrop-blur-sm">
             {/* GitHub */}
@@ -145,24 +159,19 @@ const Navbar = () => {
               href={siteConfig.github}
               target="_blank"
               rel="noreferrer noopener"
-              className="text-foreground/60 hover:text-foreground text-sm transition-colors duration-200 hover:scale-110"
+              className="text-foreground/60 hover:text-foreground transition-all duration-200 hover:scale-110"
               aria-label="GitHub"
             >
-              <svg viewBox="0 0 24 24" className="size-5">
-                <path
-                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                  fill="currentColor"
-                />
-              </svg>
+              <GithubIcon className="size-5" />
             </a>
 
-            <div className="bg-border h-4 w-px" />
+            <Divider />
 
             {/* Sound Toggle */}
             <button
-              onClick={() => toggleSoundEnabled()}
+              onClick={toggleSoundEnabled}
+              aria-label={isSoundEnabled ? "Mute sound" : "Enable sound"}
               className="text-foreground/60 hover:text-foreground transition-all duration-200 hover:scale-110"
-              aria-label={isSoundEnabled ? "Mute sounds" : "Enable sounds"}
             >
               {isSoundEnabled ? (
                 <Volume2Icon className="size-5" />
@@ -171,25 +180,25 @@ const Navbar = () => {
               )}
             </button>
 
-            <div className="bg-border h-4 w-px" />
+            <Divider />
 
             {/* Theme Toggle */}
             <button
               onClick={() =>
                 setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
-              className="transition-transform duration-200 hover:scale-110"
               aria-label="Toggle theme"
+              className="transition-transform duration-200 hover:scale-110"
             >
               <ThemeToggleButton2 className="size-5" theme={resolvedTheme} />
             </button>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <button
-            className="hover:bg-foreground/5 inline-flex size-9 items-center justify-center rounded-md border transition-colors md:hidden"
             onClick={() => setOpen((s) => !s)}
             aria-label="Toggle menu"
+            className="hover:bg-foreground/5 inline-flex size-9 items-center justify-center rounded-md border transition-colors md:hidden"
           >
             <AnimatePresence mode="wait" initial={false}>
               {open ? (
@@ -218,7 +227,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile sheet */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -243,99 +252,88 @@ const Navbar = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={cn(
-                    "group font-incognito relative overflow-hidden rounded-lg px-4 py-3 text-sm transition-all duration-200",
+                    "group relative rounded-lg px-4 py-3 text-sm font-incognito transition-all duration-200",
                     x.id === active
                       ? "bg-foreground/10 font-semibold shadow-sm"
-                      : "hover:bg-foreground/5 opacity-80 hover:opacity-100",
+                      : "hover:bg-foreground/5 opacity-80 hover:opacity-100"
                   )}
                 >
-                  {/* Active indicator */}
-                  {x.id === active && (
-                    <motion.div
-                      layoutId="mobile-nav-indicator"
-                      className="bg-foreground absolute top-0 bottom-0 left-0 w-1 rounded-r-full"
-                      initial={false}
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-
-                  {/* Hover gradient effect */}
-                  <div className="from-foreground/0 via-foreground/5 to-foreground/0 absolute inset-0 translate-x-[-100%] bg-gradient-to-r transition-transform duration-700 ease-in-out group-hover:translate-x-[100%]" />
-
-                  <div className="relative flex items-center justify-between">
-                    <span>{x.label}</span>
-                    {x.id === active && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="bg-foreground/50 size-2 rounded-full"
-                      />
-                    )}
-                  </div>
+                  {x.label}
                 </motion.a>
               ))}
 
-              <div className="bg-border my-1 h-px" />
+              <div className="bg-border my-2 h-px" />
 
-              <div className="grid grid-cols-3 gap-2 px-2 py-1">
-                <a
-                  href="https://github.com/"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="hover:bg-foreground/5 group flex flex-col items-center gap-1.5 rounded-lg py-2 transition-colors"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="text-foreground/60 group-hover:text-foreground size-5 transition-colors"
-                  >
-                    <path
-                      d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                      fill="currentColor"
+              {/* Quick actions grid */}
+              <div className="grid grid-cols-3 gap-2 px-2 py-1 text-center">
+                <QuickAction
+                  label="GitHub"
+                  icon={<GithubIcon className="size-5" />}
+                  href={siteConfig.github}
+                />
+                <QuickAction
+                  label={isSoundEnabled ? "Sound" : "Muted"}
+                  icon={
+                    isSoundEnabled ? (
+                      <Volume2Icon className="size-5" />
+                    ) : (
+                      <VolumeXIcon className="size-5" />
+                    )
+                  }
+                  onClick={toggleSoundEnabled}
+                />
+                <QuickAction
+                  label="Theme"
+                  icon={
+                    <ThemeToggleButton2
+                      className="size-5"
+                      theme={resolvedTheme}
                     />
-                  </svg>
-                  <span className="text-foreground/60 group-hover:text-foreground text-[10px] font-medium">
-                    GitHub
-                  </span>
-                </a>
-
-                <button
-                  onClick={() => toggleSoundEnabled()}
-                  className="hover:bg-foreground/5 group flex flex-col items-center gap-1.5 rounded-lg py-2 transition-colors"
-                >
-                  {isSoundEnabled ? (
-                    <Volume2Icon className="text-foreground/60 group-hover:text-foreground size-5 transition-colors" />
-                  ) : (
-                    <VolumeXIcon className="text-foreground/60 group-hover:text-foreground size-5 transition-colors" />
-                  )}
-                  <span className="text-foreground/60 group-hover:text-foreground text-[10px] font-medium">
-                    {isSoundEnabled ? "Sound" : "Muted"}
-                  </span>
-                </button>
-
-                <button
+                  }
                   onClick={() =>
                     setTheme(resolvedTheme === "dark" ? "light" : "dark")
                   }
-                  className="hover:bg-foreground/5 group flex flex-col items-center gap-1.5 rounded-lg py-2 transition-colors"
-                >
-                  <ThemeToggleButton2
-                    className="text-foreground/60 group-hover:text-foreground size-5"
-                    theme={resolvedTheme}
-                  />
-                  <span className="text-foreground/60 group-hover:text-foreground text-[10px] font-medium">
-                    Theme
-                  </span>
-                </button>
+                />
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
+  );
+};
+
+/* -------------------------------
+   🔹 Subcomponents
+--------------------------------*/
+const Divider = () => <div className="bg-border h-4 w-px" />;
+
+const QuickAction = ({
+  label,
+  icon,
+  href,
+  onClick,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  href?: string;
+  onClick?: () => void;
+}) => {
+  const Wrapper = href ? "a" : "button";
+  return (
+    <Wrapper
+      {...(href
+        ? { href, target: "_blank", rel: "noreferrer noopener" }
+        : { onClick })}
+      className="hover:bg-foreground/5 group flex flex-col items-center gap-1.5 rounded-lg py-2 transition-colors"
+    >
+      <div className="text-foreground/60 group-hover:text-foreground transition-colors">
+        {icon}
+      </div>
+      <span className="text-foreground/60 group-hover:text-foreground text-[10px] font-medium">
+        {label}
+      </span>
+    </Wrapper>
   );
 };
 

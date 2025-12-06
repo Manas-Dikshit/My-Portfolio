@@ -7,44 +7,72 @@ import HeadingLine from "@/components/ui/heading-line";
 import env from "@/config/env";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
+import { portfolioData } from "@/lib/portfolio-data";
 import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
 const Projects = () => {
-  const projects = [
+  const userProjects = portfolioData.projects.map((p) => ({
+    title: p.title,
+    description: p.description,
+    tags: p.technologies,
+    github: p.githubUrl || null,
+    image: p.image,
+    live: p.liveUrl || null,
+    date: "",
+    status: "completed",
+  }));
+
+  // Preserve original demo projects (kept after user's for non-destructive behavior)
+  const templateProjects = [
     {
-      title: "Developer Portfolio",
+      title: "Neutrino AI – AI-powered Web App (HackVerse Winner)",
       description:
-        "A personal portfolio website showcasing projects, skills, and contact information.",
-      tags: ["Portfolio", "Fullstack", "Personal"],
-      github: "https://github.com/NotStark/portfolio",
-      image: "/projects/portfolio-screenshot.png",
-      live: env.NEXT_PUBLIC_APP_URL,
-      date: "Sep, 2025",
+        "Developed and deployed an AI-powered health assistant with chatbot, diet planner, and exercise mentor features, serving 500+ users via Django REST APIs and Vercel.",
+      tags: ["HTML", "CSS", "MongoDB", "Python", "JavaScript", "Three.js"],
+      github: "https://github.com/Manas-Dikshit/Byte-Crafters",
+      image:
+        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-02-20%20015618.png",
+      live: "https://neutrino-indol.vercel.app/",
+      date: "Feb, 2025",
       status: "completed",
     },
     {
-      title: "Telegram Bot",
-      description: "A telegram group management bot built with Pyrogram.",
-      tags: ["Bot", "Management", "Telegram"],
-      github: "https://github.com/Notstark/TelegramBot",
-      image: "/projects/telegrambot-screenshot.png",
-      live: "https://t.me/HyugaGuardianBot",
-      date: "Oct, 2024",
+      title: "Unicorn – The Entrepreneurs Problem Solver",
+      description:
+        "Built a centralized platform for entrepreneurs for problem-solving, 10-year forecast graphs, success rate, planning, and idea refinement (frontend basics, Spring Boot backend, SQL dataset).",
+      tags: [
+        "HTML",
+        "Firebase",
+        "CSS",
+        "Bootstrap",
+        "JavaScript",
+        "Java",
+        "MySQL",
+      ],
+      github: "https://github.com/Manas-Dikshit/Unicorn",
+      image:
+        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-05-26%20144507.png",
+      live: "https://github.com/Manas-Dikshit/Unicorn",
+      date: "May, 2025",
       status: "completed",
     },
     {
-      title: "Anime Edge",
+      title: "EDUAI – AI-Powered Educational Toolkit (Best Performer, Hack-O-thor)",
       description:
-        "A feature-rich anime streaming platform built with Next.js, offering fast search, curated collections, and a smooth viewing experience.",
-      tags: ["Anime", "Streaming", "Fullstack"],
-      github: null,
-      image: "/projects/animeedge-screenshot.png",
-      live: null,
-      date: "Dec, 2024",
+        "Responsive web app using Gemini API to generate essays, solve equations, extract PDF Q&A, and analyze maps—integrating text/image inputs, animated outputs, and a modern multi-tool UI.",
+      tags: ["HTML", "Chart.js", "CSS", "Tailwind", "API"],
+      github: "https://github.com/Manas-Dikshit/Student-Helping-Site",
+      image:
+        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-04-08%20012800.png",
+      live: "https://github.com/Manas-Dikshit/Student-Helping-Site",
+      date: "Apr, 2025",
       status: "completed",
     },
   ];
+
+  // Show only user's projects; fall back to templates if user list is empty
+  const projects = userProjects.length > 0 ? userProjects : templateProjects;
 
   const tagColors = {
     Portfolio: "bg-blue-500/10 text-blue-600 border-blue-500/30",

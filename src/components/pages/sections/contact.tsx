@@ -115,7 +115,7 @@ export default function Contact() {
                       <span className="text-sky-400">↪</span>
                       <input
                         type="text"
-                        placeholder="Siddharth"
+                        placeholder="Manas"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         onKeyDown={handleEnter}

@@ -36,7 +36,7 @@ const Footer = () => {
        
         <div className="inline-flex items-center gap-2">
           <Logo className="w-10" />
-          <span>© {dayjs().year()} Siddharth. All rights reserved.</span>
+          <span>© {dayjs().year()} {siteConfig.title}. All rights reserved.</span>
         </div>
 
         <motion.div

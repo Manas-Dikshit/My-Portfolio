@@ -7,9 +7,9 @@ import Projects from "./sections/projects";
 import About from "./sections/about";
 import Footer from "./sections/footer";
 import Contact from "./sections/contact";
-import Stats from "./sections/stats";
+import Skills from "./sections/stats";
 import { Testimonials } from "./sections/testimonials";
-import { Guestbook } from "../feature/guestbook";
+import { Guestbook } from "@/components/feature/guestbook";
 
 const PortfolioPage = () => {
   return (
@@ -32,7 +32,7 @@ const PortfolioPage = () => {
               <Hero />
               <Projects />
               <About />
-              <Stats />
+              <Skills />
               <Testimonials />
               <Contact />
               <Footer />
