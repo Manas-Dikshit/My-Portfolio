@@ -24,17 +24,17 @@ export const auth = betterAuth({
             maxAge: 5 * 60, // Cache duration in seconds
         },
         expiresIn: 30 * 24 * 60 * 60, // 30 days in seconds
-        rolling: true,                // extend on activity
+        // rolling: true, // removed: not a valid property
     },
 
     socialProviders: {
         github: {
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
+            clientId: env.GITHUB_CLIENT_ID as string,
+            clientSecret: env.GITHUB_CLIENT_SECRET as string,
         },
         google: {
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
+            clientId: env.GOOGLE_CLIENT_ID as string,
+            clientSecret: env.GOOGLE_CLIENT_SECRET as string,
         }
     },
 
@@ -46,8 +46,7 @@ export const auth = betterAuth({
             }) ?? { role: null }
 
             return {
-                role: role as "AUTHOR" | "GUEST",
-                user: user,
+                user: { ...user, role: role as "AUTHOR" | "GUEST" },
                 session
             };
         }),

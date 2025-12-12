@@ -22,7 +22,12 @@ const achievementsAsTestimonials = portfolioData.achievements.map((a, idx) => ({
 
 interface TestimonialCardProps {
   position: number;
-  testimonial: (typeof testimonials)[0];
+  testimonial: {
+    tempId: number;
+    testimonial: string;
+    by: string;
+    imgSrc: string;
+  };
   handleMove: (steps: number) => void;
   cardSize: number;
 }
@@ -35,9 +40,21 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 }) => {
   const isCenter = position === 0;
 
+  // Accessibility: role, tabIndex, keyboard
+  // Extract ternaries
+  const translateY = isCenter ? -65 : position % 2 ? 15 : -15;
+  const rotate = isCenter ? 0 : position % 2 ? 2.5 : -2.5;
+  const boxShadow = isCenter
+    ? "0px 8px 0px 4px hsl(var(--border))"
+    : "0px 0px 0px 0px transparent";
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => handleMove(position)}
+      onKeyDown={e => {
+        if (e.key === "Enter" || e.key === " ") handleMove(position);
+      }}
       className={cn(
         "absolute top-1/2 left-1/2 cursor-pointer border-2 p-8 transition-all duration-500 ease-in-out",
         isCenter
@@ -51,12 +68,10 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         transform: `
           translate(-50%, -50%) 
           translateX(${(cardSize / 1.5) * position}px)
-          translateY(${isCenter ? -65 : position % 2 ? 15 : -15}px)
-          rotate(${isCenter ? 0 : position % 2 ? 2.5 : -2.5}deg)
+          translateY(${translateY}px)
+          rotate(${rotate}deg)
         `,
-        boxShadow: isCenter
-          ? "0px 8px 0px 4px hsl(var(--border))"
-          : "0px 0px 0px 0px transparent",
+        boxShadow,
       }}
     >
       <span
@@ -123,13 +138,13 @@ export const Testimonials: React.FC = () => {
 
   useEffect(() => {
     const updateSize = () => {
-      const { matches } = window.matchMedia("(min-width: 640px)");
+      const { matches } = globalThis.matchMedia("(min-width: 640px)");
       setCardSize(matches ? 365 : 290);
     };
 
     updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
+    globalThis.addEventListener("resize", updateSize);
+    return () => globalThis.removeEventListener("resize", updateSize);
   }, []);
 
   return (

@@ -1,6 +1,8 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import type { Session } from "next-auth";
 
 
 //  Fetch all todos
@@ -23,12 +25,12 @@ export async function GET() {
 //  Create new todo
 export async function POST(req: NextRequest) {
     try {
-        const session = await auth.api.getSession({
+        const session = (await auth.api.getSession({
             headers: req.headers,
-        });
+        })) as Session | null;
 
 
-        if (!session) {
+        if (!session?.user || session.user.role !== "AUTHOR") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
@@ -61,12 +63,12 @@ export async function POST(req: NextRequest) {
 //  Update todo
 export async function PATCH(req: NextRequest) {
     try {
-        const session = await auth.api.getSession({
+        const session = (await auth.api.getSession({
             headers: req.headers,
-        });
+        })) as Session | null;
 
 
-        if (!session || session.role !== "AUTHOR") {
+        if (!session?.user || session.user.role !== "AUTHOR") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
@@ -98,12 +100,12 @@ export async function PATCH(req: NextRequest) {
 // Delete todo 
 export async function DELETE(req: NextRequest) {
     try {
-        const session = await auth.api.getSession({
+        const session = (await auth.api.getSession({
             headers: req.headers,
-        });
+        })) as Session | null;
 
 
-        if (!session || session.role !== "AUTHOR") {
+        if (!session?.user || session.user.role !== "AUTHOR") {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
