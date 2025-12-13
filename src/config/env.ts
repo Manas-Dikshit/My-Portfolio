@@ -12,8 +12,9 @@ const env = createEnv({
     // won't throw during module evaluation when env vars are missing.
     // In production you should provide the real values and tighten the schema.
     DATABASE_URL: z.string().refine(val => !val || val.startsWith('http://') || val.startsWith('https://') || val.startsWith('postgresql://'), {
-      message: 'DATABASE_URL must start with postgresql://, http://,prisma+postgres://  or https://',
+      message: 'DATABASE_URL must start with postgresql://, prisma+postgres://, http://, or https://',
     }).optional(),
+      val.startsWith('prisma+postgres://') ||
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).default("nodejs"),
     GITHUB_CLIENT_ID: z.string().optional(),
     GITHUB_CLIENT_SECRET: z.string().optional(),
