@@ -137,21 +137,21 @@ const Hero = () => {
             {
               label: "Years of Experience",
               value:
-                parseInt((portfolioData.personal.stats.experience as unknown as string) || "0") || 0,
+                Number.parseInt((portfolioData.personal.stats.experience as unknown as string) || "0") || 0,
             },
             {
               label: "Projects Shipped",
               value:
-                parseInt((portfolioData.personal.stats.projects as unknown as string) || "0") || 0,
+                Number.parseInt((portfolioData.personal.stats.projects as unknown as string) || "0") || 0,
             },
             {
               label: "Happy Clients",
               value:
-                parseInt((portfolioData.personal.stats.clients as unknown as string) || "0") || 0,
+                Number.parseInt((portfolioData.personal.stats.clients as unknown as string) || "0") || 0,
             },
           ].map((stat, i) => (
             <div
-              key={i}
+              key={portfolioData.personal.stats.clients + '-' + i}
               className={cn(
                 "group hover:bg-foreground/5 relative p-8 text-center transition-colors",
                 i !== 3 && "border-r",

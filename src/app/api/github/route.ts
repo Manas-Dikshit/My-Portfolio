@@ -9,24 +9,17 @@ import axios from 'axios';
 
 export const revalidate = 604800
 
-
 class GitHubStatsCalculator {
-
   static isWithinDays(dateString: string, days: number): boolean {
     return dayjs(dateString).isAfter(dayjs().subtract(days, 'day'));
   }
 
-
-  // Streak Calculation 
   static calculateStreaks(weeks: Week[]): { current: number; longest: number } {
     const allDays = weeks.flatMap(w => w.contributionDays);
     const today = dayjs().startOf('day');
-
     let current = 0;
     let longest = 0;
     let temp = 0;
-
-    // current streak
     for (let i = allDays.length - 1; i >= 0; i--) {
       const d = dayjs(allDays[i].date).startOf('day');
       if (d.isAfter(today)) continue;
@@ -34,8 +27,6 @@ class GitHubStatsCalculator {
         current++;
       } else if (current > 0) break;
     }
-
-    // longest streak
     for (const day of allDays) {
       if (day.contributionCount > 0) {
         temp++;
@@ -44,27 +35,22 @@ class GitHubStatsCalculator {
         temp = 0;
       }
     }
-
     return { current, longest };
   }
 
-  //  Highest Commit Day
   static calculateHighestCommitDay(weeks: Week[]): { date: string; count: number } {
     const allDays = weeks.flatMap(w => w.contributionDays);
     const highest = maxBy(allDays, 'contributionCount');
-
     return {
       date: highest ? dayjs(highest.date).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
       count: highest?.contributionCount || 0,
     };
   }
 
-  //  Top Languages 
   static calculateTopLanguages(
     repositories: Array<{ isFork: boolean; primaryLanguage?: { name: string; color: string } }>
   ): Language[] {
     const langMap = new Map<string, { count: number; color: string }>();
-
     repositories
       .filter(r => !r.isFork)
       .forEach(repo => {
@@ -74,9 +60,7 @@ class GitHubStatsCalculator {
           langMap.set(name, { count: current.count + 1, color });
         }
       });
-
     const total = Array.from(langMap.values()).reduce((sum, l) => sum + l.count, 0);
-
     return Array.from(langMap.entries())
       .map(([name, data]) => ({
         name,
@@ -87,7 +71,6 @@ class GitHubStatsCalculator {
       .slice(0, 3);
   }
 
-  //  Totals 
   static calculateTotalStars(repositories: Array<{ stargazerCount: number }>): number {
     return sumBy(repositories, 'stargazerCount');
   }
@@ -132,7 +115,6 @@ class GitHubStatsCalculator {
     );
   }
 
-  //  Weekly Metrics 
   static calculateWeeklyContributions(weeks: Week[]): number {
     const allDays = weeks.flatMap(w => w.contributionDays);
     return allDays
@@ -159,7 +141,6 @@ class GitHubStatsCalculator {
       .reduce((sum, r) => sum + r.stargazerCount, 0);
   }
 
-  //  Trend Calculation 
   static calculateTrend(weekly: number, total: number): Trend {
     return {
       value: weekly,
@@ -181,7 +162,6 @@ class GitHubStatsCalculator {
     const weeklyStars = this.estimateWeeklyStars(repositories);
     const weeklyContrib = this.calculateWeeklyContributions(weeks);
     const weeklyPRs = this.calculateWeeklyPullRequests(pullRequests);
-
     return {
       repositories: this.calculateTrend(weeklyRepos, totalRepositories),
       stars: this.calculateTrend(weeklyStars, totalStars),
@@ -272,7 +252,7 @@ async function fetchContributionDays(username: string) {
   let match: RegExpExecArray | null;
   while ((match = regex.exec(html))) {
     const date = match[1];
-    const count = parseInt(match[2], 10) || 0;
+    const count = Number.parseInt(match[2], 10) || 0;
     days.push({ date, contributionCount: count, color: '#9be9a8' });
   }
   // Group into weeks by week start (Sunday)
@@ -285,10 +265,13 @@ async function fetchContributionDays(username: string) {
   }
   const weeks = Array.from(weeksMap.values())
     .sort((a, b) => (a.firstDay < b.firstDay ? -1 : 1))
-    .map((w) => ({
-      firstDay: w.firstDay,
-      contributionDays: w.contributionDays.sort((a, b) => (a.date < b.date ? -1 : 1)),
-    }));
+    .map((w) => {
+      const sortedDays = w.contributionDays.toSorted((a, b) => (a.date < b.date ? -1 : 1));
+      return {
+        firstDay: w.firstDay,
+        contributionDays: sortedDays,
+      };
+    });
 
   return {
     colors: [],
@@ -307,40 +290,20 @@ async function buildPublicStats(username: string): Promise<GitHubStatsResponse> 
     fetchPublicEvents(username),
   ]);
 
-  // languages
-  const langMap = new Map<string, { count: number }>();
-  for (const r of repos) {
-    if (r.language) {
-      const o = langMap.get(r.language) || { count: 0 };
-      o.count += 1;
-      langMap.set(r.language, o);
-    }
-  }
-  const totalLang = Array.from(langMap.values()).reduce((s, v) => s + v.count, 0) || 1;
-  const topLanguages: Language[] = Array.from(langMap.entries())
-    .map(([name, v]) => ({ name, color: '#3b82f6', percentage: Math.round((v.count / totalLang) * 100) }))
-    .sort((a, b) => b.percentage - a.percentage)
-    .slice(0, 3);
-
-  const totalStars = repos.reduce((s, r) => s + (r.stargazers_count || 0), 0);
-  const repoTypes = repos.reduce(
-    (acc, r) => {
-      if (r.fork) acc.forked += 1; else acc.original += 1; return acc;
-    },
-    { original: 0, forked: 0 },
-  );
-
-  // Weekly trends (approx):
-  const sevenDaysAgo = dayjs().subtract(7, 'day');
-  const weeklyRepos = repos.filter((r) => dayjs(r.created_at).isAfter(sevenDaysAgo)).length;
-  // Contributions from events (PushEvent count size)
-  const weeklyContrib = events
-    .filter((e) => dayjs(e.created_at).isAfter(sevenDaysAgo) && e.type === 'PushEvent')
-    .reduce((sum, e) => sum + (e.payload?.size || 0), 0);
-  const weeklyPRs = await searchCount(`type:pr author:${username} created:>=${sevenDaysAgo.format('YYYY-MM-DD')}`);
-
+  // Map repos to expected shape for static methods
+  const mappedRepos = repos.map(r => ({
+    isFork: r.fork,
+    stargazerCount: r.stargazers_count,
+    createdAt: r.created_at,
+    primaryLanguage: r.language ? { name: r.language, color: '#3b82f6' } : undefined,
+  }));
   const contributionsCalendar = await fetchContributionDays(username);
-
+  const repoTypes = GitHubStatsCalculator.countRepositoryTypes(mappedRepos);
+  const totalStars = GitHubStatsCalculator.calculateTotalStars(mappedRepos);
+  const topLanguages: Language[] = GitHubStatsCalculator.calculateTopLanguages(mappedRepos);
+  const weeklyRepos = GitHubStatsCalculator.calculateWeeklyRepositories(mappedRepos);
+  const weeklyContrib = GitHubStatsCalculator.calculateWeeklyContributions(contributionsCalendar.weeks as Week[]);
+  const weeklyPRs = GitHubStatsCalculator.calculateWeeklyPullRequests(events as any);
   const streaks = GitHubStatsCalculator.calculateStreaks(contributionsCalendar.weeks as Week[]);
   const highest = GitHubStatsCalculator.calculateHighestCommitDay(contributionsCalendar.weeks as Week[]);
 
@@ -445,12 +408,12 @@ const GITHUB_GRAPHQL_QUERY = `
 
 
 export async function GET() {
+  if (!env.NEXT_PUBLIC_GITHUB_USERNAME) {
+    return NextResponse.json({ success: false, message: 'GitHub username not configured' }, { status: 503 });
+  }
   try {
     // If no token configured, build stats from public GitHub endpoints (no secrets required)
     if (!env.GITHUB_TOKEN) {
-      if (!env.NEXT_PUBLIC_GITHUB_USERNAME) {
-        return NextResponse.json({ success: false, message: 'NEXT_PUBLIC_GITHUB_USERNAME is not set' }, { status: 400 });
-      }
       const stats = await buildPublicStats(env.NEXT_PUBLIC_GITHUB_USERNAME);
       return NextResponse.json({ success: true, data: stats, message: 'Fetched public GitHub stats' });
     }
@@ -509,8 +472,6 @@ export async function GET() {
       totalContrib,
       totalPRs
     );
-
-
     const stats: GitHubStatsResponse = {
       contributionsCollection: {
         contributionCalendar: {
@@ -531,7 +492,7 @@ export async function GET() {
         })),
       },
       topLanguages,
-    contributions: totalContrib,
+      contributions: totalContrib,
       pullRequests: {
         total: totalPRs,
         open: prStates.open,
@@ -553,7 +514,6 @@ export async function GET() {
       },
       weeklyTrends,
     };
-
     return NextResponse.json({ success: true, data: stats, message: "Successfully fetched GitHub statistics" });
   } catch (err) {
     console.error('Failed to fetch GitHub statistics:', (err as Error).message)

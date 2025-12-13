@@ -6,7 +6,7 @@ import {
   MenuIcon,
   Volume2Icon,
   VolumeXIcon,
-  GithubIcon,
+  Github,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggleButton2 } from "../../theme-toggle";
@@ -46,14 +46,14 @@ const Navbar = () => {
      Hash Sync for Active Tab
   --------------------------------*/
   useEffect(() => {
-    const ids = NAV_LINKS.map((x) => x.id);
+    const ids = new Set(NAV_LINKS.map((x) => x.id));
     const setFromHash = () => {
-      const hash = window?.location?.hash?.replace("#", "") || "home";
-      setActive(ids.includes(hash as NavId) ? (hash as NavId) : "home");
+      const hash = globalThis?.location?.hash?.replace("#", "") || "home";
+      setActive(ids.has(hash as NavId) ? (hash as NavId) : "home");
     };
     setFromHash();
-    window.addEventListener("hashchange", setFromHash);
-    return () => window.removeEventListener("hashchange", setFromHash);
+    globalThis.addEventListener("hashchange", setFromHash);
+    return () => globalThis.removeEventListener("hashchange", setFromHash);
   }, []);
 
   /* --------------------------------
@@ -162,7 +162,7 @@ const Navbar = () => {
               className="text-foreground/60 hover:text-foreground transition-all duration-200 hover:scale-110"
               aria-label="GitHub"
             >
-              <GithubIcon className="size-5" />
+              <Github className="size-5" />
             </a>
 
             <Divider />
@@ -268,7 +268,7 @@ const Navbar = () => {
               <div className="grid grid-cols-3 gap-2 px-2 py-1 text-center">
                 <QuickAction
                   label="GitHub"
-                  icon={<GithubIcon className="size-5" />}
+                  icon={<Github className="size-5" />}
                   href={siteConfig.github}
                 />
                 <QuickAction

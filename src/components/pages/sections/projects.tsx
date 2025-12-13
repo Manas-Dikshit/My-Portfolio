@@ -8,7 +8,7 @@ import HeadingLine from "@/components/ui/heading-line";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { portfolioData } from "@/lib/portfolio-data";
-import { Github, ArrowUpRight, ExternalLink } from "lucide-react";
+import { GithubIcon, ArrowUpRight, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 
 const Projects = () => {
@@ -197,7 +197,7 @@ const Projects = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github className="mr-2 h-4 w-4" />
+                      <GithubIcon className="mr-2 h-4 w-4" />
                       View Code
                       <ArrowUpRight className="ml-1 h-3 w-3 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                     </a>
@@ -257,7 +257,7 @@ const Projects = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <span className="bg-foreground/40 mr-2 inline-block h-px w-8 transition-all group-hover:w-12" />
+              <span className="mr-2 bg-foreground/40 inline-block h-px w-8 transition-all group-hover:w-12" aria-hidden="true" />
               VIEW ALL PROJECTS ON GITHUB
               <span className="bg-foreground/40 ml-2 inline-block h-px w-8 transition-all group-hover:w-12" />
             </a>

@@ -11,7 +11,7 @@ import { Send, X } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import SectionHeading from "@/components/section-heading";
 
- // TODO Store in DB
+ // TODO: Implement storing contact form data in DB if required
 
 export default function Contact() {
   const [email, setEmail] = useState("");
@@ -30,7 +30,7 @@ export default function Contact() {
     if (!canSend) return;
     try {
       setStatus("sending");
-      window.location.href = `mailto:${siteConfig.email}?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
+      globalThis.location.href = `mailto:${siteConfig.email}?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
         name || "Anonymous",
       )}&body=${encodeURIComponent(message)}%0A%0Afrom:%20${encodeURIComponent(email)}`;
       setStatus("sent");
@@ -175,8 +175,8 @@ export default function Contact() {
                           {status === "sending"
                             ? "Sending…"
                             : status === "sent"
-                              ? "Sent!"
-                              : "Send"}
+                            ? "Sent!"
+                            : "Send"}
                         </Button>
                       </div>
                     </div>

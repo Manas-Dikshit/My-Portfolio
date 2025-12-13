@@ -16,7 +16,7 @@ const structuredData = {
   ]
 };
 import type { Metadata } from "next";
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import Providers from "@/components/providers";
 import { geistMono, geistSans, incognito, pixelifySans } from "@/assets/fonts";
 import { cn } from "@/lib/utils";

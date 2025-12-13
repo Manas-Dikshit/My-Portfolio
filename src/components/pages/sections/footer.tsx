@@ -1,7 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/ui/logo";
-import { Github, Heart, Linkedin, Mail, Twitter } from "lucide-react";
+import { GithubIcon, Heart, LinkedinIcon, Mail, TwitterIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { motion } from "motion/react";
 import { siteConfig } from "@/config/site";
@@ -9,17 +9,17 @@ import { siteConfig } from "@/config/site";
 const Footer = () => {
   const socialLinks = [
     {
-      icon: Github,
+      icon: GithubIcon,
       href: siteConfig.github,
       label: "GitHub",
     },
     {
-      icon: Linkedin,
+      icon: LinkedinIcon,
       href: siteConfig.linkedin,
       label: "LinkedIn",
     },
     {
-      icon: Twitter,
+      icon: TwitterIcon,
       href: siteConfig.twitter,
       label: "X (Twitter)",
     },

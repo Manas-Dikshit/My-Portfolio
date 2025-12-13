@@ -11,14 +11,18 @@ const env = createEnv({
     // Make non-essential values optional in development so the app
     // won't throw during module evaluation when env vars are missing.
     // In production you should provide the real values and tighten the schema.
-    DATABASE_URL: z.string().url().optional(),
+    DATABASE_URL: z.string().refine(val => !val || val.startsWith('http://') || val.startsWith('https://') || val.startsWith('postgresql://'), {
+      message: 'DATABASE_URL must start with postgresql://, http://, or https://',
+    }).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).default("nodejs"),
     GITHUB_CLIENT_ID: z.string().optional(),
     GITHUB_CLIENT_SECRET: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
     BETTER_AUTH_SECRET: z.string().optional(),
-    BETTER_AUTH_URL: z.string().url().default("http://localhost:3000"),
+    BETTER_AUTH_URL: z.string().refine(val => val.startsWith('http://') || val.startsWith('https://'), {
+      message: 'BETTER_AUTH_URL must start with http:// or https://',
+    }).default("http://localhost:3000"),
     UMAMI_API_KEY: z.string().optional(),
     GITHUB_TOKEN: z.string().optional()
   },
@@ -28,7 +32,9 @@ const env = createEnv({
    * 💡 You'll get type errors if these are not prefixed with NEXT_PUBLIC_.
    */
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+    NEXT_PUBLIC_APP_URL: z.string().refine(val => val.startsWith('http://') || val.startsWith('https://'), {
+      message: 'NEXT_PUBLIC_APP_URL must start with http:// or https://',
+    }).default("http://localhost:3000"),
     NEXT_PUBLIC_GITHUB_USERNAME: z.string().optional(),
     // default availability to false to avoid validation errors when missing
     NEXT_PUBLIC_AVAILABLE_STATUS: z.coerce.boolean().default(false),

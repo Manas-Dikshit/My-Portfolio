@@ -815,7 +815,7 @@ export default function Stats() {
     }
 
     if (error) {
-      return <ErrorState error={error as Error} />;
+      return <ErrorState error={error} />;
     }
 
     if (!githubData) {
@@ -875,7 +875,7 @@ export default function Stats() {
                         className="bg-card absolute inset-0 rounded-t-xl"
                         transition={{
                           type: "spring",
-                          bounce: 0.0,
+                          bounce: 0,
                           duration: isSafari ? 0 : 0.4,
                         }}
                       />

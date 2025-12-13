@@ -1,3 +1,5 @@
+// Fallback: skip DB logic if DATABASE_URL is missing
+const isDbAvailable = !!process.env.DATABASE_URL;
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -5,6 +7,10 @@ import { auth } from "@/lib/auth";
 
 // List all guestbook entries
 export async function GET() {
+    if (!isDbAvailable) {
+        console.warn("DATABASE_URL not found, skipping DB fetch");
+        return NextResponse.json({ success: true, data: [], message: "Entries fetched successfully (DB unavailable)" });
+    }
     try {
         const entries = await prisma.guestbookEntry.findMany({
             include: {
@@ -23,7 +29,6 @@ export async function GET() {
             },
             orderBy: { createdAt: "asc" },
         });
-
         return NextResponse.json({ success: true, data: entries, message: "Entries fetched successfully" });
     } catch (err) {
         console.error("Error fetching guestbook:", err);
@@ -36,15 +41,15 @@ export async function GET() {
 
 // Add a new entry
 export async function POST(req: Request) {
+    if (!isDbAvailable) {
+        return NextResponse.json({ success: false, message: "Database unavailable" }, { status: 503 });
+    }
     try {
         const session = await auth.api.getSession({ headers: req.headers });
-
         if (!session) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
-
         const { user } = session;
-
         const { content } = await req.json();
         if (!content || content.trim().length === 0) {
             return NextResponse.json(
@@ -52,7 +57,6 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-
         const newEntry = await prisma.guestbookEntry.create({
             data: {
                 content: content.trim(),
@@ -73,7 +77,6 @@ export async function POST(req: Request) {
                 },
             },
         });
-
         return NextResponse.json({ success: true, data: newEntry, message: "Guestbook entry created successfully" }, { status: 201 });
     } catch (err: any) {
         console.error("Error creating guestbook entry:", err);
@@ -86,29 +89,25 @@ export async function POST(req: Request) {
 
 // Remove an entry
 export async function DELETE(req: Request) {
+    if (!isDbAvailable) {
+        return NextResponse.json({ success: false, message: "Database unavailable" }, { status: 503 });
+    }
     try {
-
         const session = await auth.api.getSession({ headers: req.headers });
         if (!session?.user) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
-
         const { id } = await req.json();
-
         if (!id) {
             return NextResponse.json({ success: false, message: "Guestbook ID is required" }, { status: 400 });
         }
-
         const entry = await prisma.guestbookEntry.findUnique({
             where: { id }
         });
-
         if (!entry) {
             return NextResponse.json({ success: false, message: "Guestbook Entry not found" }, { status: 404 });
         }
-
         await prisma.guestbookEntry.delete({ where: { id }, });
-
         return NextResponse.json({ success: true, message: "Guestbook entry deleted successfully" },);
     } catch (err: any) {
         console.error("Error deleting guestbook entry:", err);

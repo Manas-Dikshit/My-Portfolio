@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 import useScreenSize from "@/hooks/use-screen-size";
 import type { Song } from "@/types";
 import { useIsClient } from "@uidotdev/usehooks";
-import { Mail, Twitter, Linkedin, Github } from "lucide-react";
+import { Mail, TwitterIcon, LinkedinIcon, GithubIcon } from "lucide-react";
 import { AnimatePresence, motion, Variants } from "motion/react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
@@ -117,9 +117,9 @@ const slideInBottom: Variants = {
 };
 
 const socialLinks = [
-  { icon: Github, label: "Github", link: `${siteConfig.github}/portfolio` },
+  { icon: GithubIcon, label: "Github", link: `${siteConfig.github}/portfolio` },
   { icon: Mail, label: "Email", link: `mailto:${siteConfig.email}` },
-  { icon: Twitter, label: "Twitter", link: siteConfig.twitter },
+  { icon: TwitterIcon, label: "Twitter", link: siteConfig.twitter },
 ];
 
 const MainScreen: React.FC<{

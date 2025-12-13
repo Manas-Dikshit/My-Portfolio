@@ -42,15 +42,18 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
   // Accessibility: role, tabIndex, keyboard
   // Extract ternaries
-  const translateY = isCenter ? -65 : position % 2 ? 15 : -15;
-  const rotate = isCenter ? 0 : position % 2 ? 2.5 : -2.5;
+  let translateY = -15;
+  if (isCenter) translateY = -65;
+  else if (position % 2) translateY = 15;
+  let rotate = -2.5;
+  if (isCenter) rotate = 0;
+  else if (position % 2) rotate = 2.5;
   const boxShadow = isCenter
     ? "0px 8px 0px 4px hsl(var(--border))"
     : "0px 0px 0px 0px transparent";
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={() => handleMove(position)}
       onKeyDown={e => {
         if (e.key === "Enter" || e.key === " ") handleMove(position);
@@ -107,7 +110,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       >
         - {testimonial.by}
       </p>
-    </div>
+    </button>
   );
 };
 
