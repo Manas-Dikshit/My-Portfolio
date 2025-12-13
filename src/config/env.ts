@@ -11,10 +11,15 @@ const env = createEnv({
     // Make non-essential values optional in development so the app
     // won't throw during module evaluation when env vars are missing.
     // In production you should provide the real values and tighten the schema.
-    DATABASE_URL: z.string().refine(val => !val || val.startsWith('http://') || val.startsWith('https://') || val.startsWith('postgresql://'), {
+    DATABASE_URL: z.string().refine(val =>
+      !val ||
+      val.startsWith('postgresql://') ||
+      val.startsWith('prisma+postgres://') ||
+      val.startsWith('http://') ||
+      val.startsWith('https://')
+    , {
       message: 'DATABASE_URL must start with postgresql://, prisma+postgres://, http://, or https://',
     }).optional(),
-      val.startsWith('prisma+postgres://') ||
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).default("nodejs"),
     GITHUB_CLIENT_ID: z.string().optional(),
     GITHUB_CLIENT_SECRET: z.string().optional(),
