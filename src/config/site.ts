@@ -10,7 +10,7 @@ export const siteConfig = {
     twitter: portfolioData.social.instagram,
     linkedin: portfolioData.social.linkedin,
     github: portfolioData.social.github,
-    email: portfolioData.contact.email,
+    email: "manasranjandikshit01@gmail.com",
     telegram: "https://t.me/EternalVortex"
 
 }

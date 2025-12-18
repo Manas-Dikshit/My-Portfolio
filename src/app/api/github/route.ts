@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import dayjs from 'dayjs';
-import { maxBy, sumBy } from 'lodash';
 
 import type { Week, Language, GitHubStatsResponse, Trend } from '@/types/github';
 import env from '@/config/env';
@@ -40,10 +39,19 @@ class GitHubStatsCalculator {
 
   static calculateHighestCommitDay(weeks: Week[]): { date: string; count: number } {
     const allDays = weeks.flatMap(w => w.contributionDays);
-    const highest = maxBy(allDays, 'contributionCount');
+    let highestDate = dayjs().format('YYYY-MM-DD');
+    let highestCount = 0;
+
+    for (const day of allDays) {
+      if (day.contributionCount > highestCount) {
+        highestCount = day.contributionCount;
+        highestDate = dayjs(day.date).format('YYYY-MM-DD');
+      }
+    }
+
     return {
-      date: highest ? dayjs(highest.date).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'),
-      count: highest?.contributionCount || 0,
+      date: highestDate,
+      count: highestCount,
     };
   }
 
@@ -72,7 +80,7 @@ class GitHubStatsCalculator {
   }
 
   static calculateTotalStars(repositories: Array<{ stargazerCount: number }>): number {
-    return sumBy(repositories, 'stargazerCount');
+    return repositories.reduce((sum, repo) => sum + repo.stargazerCount, 0);
   }
 
   static countRepositoryTypes(

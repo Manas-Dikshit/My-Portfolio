@@ -11,8 +11,6 @@ import { Send, X } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import SectionHeading from "@/components/section-heading";
 
- // TODO: Implement storing contact form data in DB if required
-
 export default function Contact() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -23,6 +21,13 @@ export default function Contact() {
   );
 
   const canSend = email.trim().length > 3 && message.trim().length > 4;
+
+  let buttonLabel = "Send";
+  if (status === "sending") {
+    buttonLabel = "Sending";
+  } else if (status === "sent") {
+    buttonLabel = "Sent!";
+  }
 
   const onSubmit = async (e: React.FormEvent) => {
    
@@ -172,11 +177,7 @@ export default function Contact() {
                           className="border-foreground/20 bg-primary/10 text-foreground hover:bg-primary/20 border-2 font-mono text-xs disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           <Send className="mr-1 h-3.5 w-3.5" />
-                          {status === "sending"
-                            ? "Sending…"
-                            : status === "sent"
-                            ? "Sent!"
-                            : "Send"}
+                          {buttonLabel}
                         </Button>
                       </div>
                     </div>
