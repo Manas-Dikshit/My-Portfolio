@@ -367,8 +367,7 @@ const HomePage = () => {
             // setCurrentConsoleNavigation("portfolio")
           },
           resume: () => {
-            const resumeUrl = "/resume.pdf";
-            window.open(resumeUrl, "_blank");
+            router.push("/resume");
           },
         };
 
