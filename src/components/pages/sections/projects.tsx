@@ -19,8 +19,8 @@ const Projects = () => {
     github: p.githubUrl || null,
     image: p.image,
     live: p.liveUrl || null,
-    date: "",
-    status: "completed",
+    date: (p as any).date || "",
+    status: (p as any).status || "completed",
   }));
 
   // Preserve original demo projects (kept after user's for non-destructive behavior)
@@ -31,8 +31,7 @@ const Projects = () => {
         "Developed and deployed an AI-powered health assistant with chatbot, diet planner, and exercise mentor features, serving 500+ users via Django REST APIs and Vercel.",
       tags: ["HTML", "CSS", "MongoDB", "Python", "JavaScript", "Three.js"],
       github: "https://github.com/Manas-Dikshit/Byte-Crafters",
-      image:
-        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-02-20%20015618.png",
+      image: "/neutrinoai.png",
       live: "https://neutrino-indol.vercel.app/",
       date: "Feb, 2025",
       status: "completed",
@@ -51,8 +50,7 @@ const Projects = () => {
         "MySQL",
       ],
       github: "https://github.com/Manas-Dikshit/Unicorn",
-      image:
-        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-05-26%20144507.png",
+      image: "/unicorn.png",
       live: "https://github.com/Manas-Dikshit/Unicorn",
       date: "May, 2025",
       status: "completed",
@@ -63,8 +61,7 @@ const Projects = () => {
         "Responsive web app using Gemini API to generate essays, solve equations, extract PDF Q&A, and analyze maps—integrating text/image inputs, animated outputs, and a modern multi-tool UI.",
       tags: ["HTML", "Chart.js", "CSS", "Tailwind", "API"],
       github: "https://github.com/Manas-Dikshit/Student-Helping-Site",
-      image:
-        "https://manas-ranjan-dikshit.netlify.app/photos/Screenshot%202025-04-08%20012800.png",
+      image: "/eduai.png",
       live: "https://github.com/Manas-Dikshit/Student-Helping-Site",
       date: "Apr, 2025",
       status: "completed",
