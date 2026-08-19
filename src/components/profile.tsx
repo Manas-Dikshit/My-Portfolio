@@ -2,8 +2,6 @@
 
 import { PixelImage } from "./ui/pixel-image";
 import { motion } from "motion/react";
-import { portfolioData } from "@/lib/portfolio-data";
-import { Badge } from "./ui/badge";
 
 export const ArrowIcon: React.FC<{ className?: string }> = ({ className }) => {
   return (
