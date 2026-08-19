@@ -106,6 +106,7 @@ const Typewriter = ({
     texts,
     currentTextIndex,
     loop,
+    initialDelay,
   ])
 
   return (

@@ -104,7 +104,7 @@ export function Animation({
     } else {
       controls.set("visible");
     }
-  }, []);
+  }, [initialAnimation, controls, startAnimation]);
 
   const handleHover = () => {
     if (hover && !isAnimating) {
