@@ -79,14 +79,16 @@ export function Animation({
   );
 
   const startAnimation = useCallback(async () => {
-    if (isAnimating) return;
+    if (isAnimating || !mountedRef.current) return;
 
     setIsAnimating(true);
     animationCompleteCountRef.current = 0;
     currentLoopRef.current = 0;
 
     const runCycle = async () => {
+      if (!mountedRef.current) return;
       await controls.start("visible");
+      if (!mountedRef.current) return;
       currentLoopRef.current++;
 
       // Check if we need to loop
@@ -108,6 +110,8 @@ export function Animation({
   }, [controls, isAnimating, totalLoops, onAnimationEnd]);
 
   useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
     if (initialAnimation) {
       startAnimation();
     } else {
