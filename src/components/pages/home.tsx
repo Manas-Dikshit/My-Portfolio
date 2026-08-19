@@ -385,7 +385,7 @@ const HomePage = () => {
         setCurrentConsoleNavigation("main");
       }
     },
-    [currentConsoleNavigation, selectedItem, musicPlaylist],
+    [currentConsoleNavigation, selectedItem, musicPlaylist, router],
   );
 
   const renderConsoleScreen = useCallback(() => {
