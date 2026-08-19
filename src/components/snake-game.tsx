@@ -247,7 +247,7 @@ const SnakeGame = forwardRef<SnakeGameHandle, SnakeGameProps>(
       if (dims.w && dims.h && snake.length === 0) {
         initGame();
       }
-    }, [dims.w, dims.h]);
+    }, [dims.w, dims.h, initGame, snake.length]);
 
     
     useEffect(() => {
