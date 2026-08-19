@@ -58,9 +58,10 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - **File:** `src/lib/prisma.ts:9`
 - **Issue:** The var is read but absent from `env.ts`, so it's never validated/typed.
 
-### 12. Netlify config broken
+### 12. Netlify config broken — ✅ FIXED
 - **File:** `netlify.toml:4`
 - **Issue:** `functions = "netlify/functions"` points to a non-existent directory; `publish = ".next"` with no `@netlify/plugin-nextjs` plugin → Next.js won't deploy correctly on Netlify.
+- **Status:** Fixed. `netlify.toml` now runs `npm run build` and declares the official `@netlify/plugin-nextjs` plugin (auto-installed by Netlify), which manages the publish dir and functions itself — removed the bogus `functions`/`publish` keys.
 
 ### 13. Two different emails — ✅ FIXED
 - **Files:** `src/config/site.ts:13` (`manasranjandikshit01@gmail.com`) vs `src/lib/portfolio-data.ts:25` (`manasdikshit48@gmail.com`).
