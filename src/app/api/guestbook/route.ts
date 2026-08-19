@@ -4,6 +4,22 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
+const MAX_CONTENT_LENGTH = 500;
+
+// ponytail: in-memory per-user rate limiter; best-effort across serverless
+// instances and bounded by active users. Upgrade to a shared store (Redis/DB)
+// if you deploy multiple instances or abuse becomes an issue.
+const RATE_LIMIT = { max: 5, windowMs: 60_000 };
+const postTimestamps = new Map<string, number[]>();
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const times = (postTimestamps.get(key) ?? []).filter((t) => now - t < RATE_LIMIT.windowMs);
+  if (times.length) postTimestamps.set(key, times);
+  else postTimestamps.delete(key);
+  return times.length >= RATE_LIMIT.max;
+}
+
 
 // List all guestbook entries
 export async function GET() {
@@ -51,15 +67,28 @@ export async function POST(req: Request) {
         }
         const { user } = session;
         const { content } = await req.json();
-        if (!content || content.trim().length === 0) {
+        if (typeof content !== "string" || content.trim().length === 0) {
             return NextResponse.json(
-                { error: "Content is required" },
+                { success: false, message: "Content is required" },
                 { status: 400 }
+            );
+        }
+        const trimmed = content.trim();
+        if (trimmed.length > MAX_CONTENT_LENGTH) {
+            return NextResponse.json(
+                { success: false, message: `Content must be ${MAX_CONTENT_LENGTH} characters or less` },
+                { status: 400 }
+            );
+        }
+        if (isRateLimited(user.id)) {
+            return NextResponse.json(
+                { success: false, message: "Too many posts, try again later" },
+                { status: 429 }
             );
         }
         const newEntry = await prisma.guestbookEntry.create({
             data: {
-                content: content.trim(),
+                content: trimmed,
                 userId: user.id,
             },
             include: {
