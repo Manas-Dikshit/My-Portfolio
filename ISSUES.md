@@ -82,9 +82,10 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 ### W1. Turbopack workspace root inference
 - **Issue:** `next build --turbopack` warns that it inferred the wrong workspace root (`C:\Users\manas\package-lock.json`) because multiple lockfiles were detected. Set `turbopack.root` in `next.config.*` or remove the stray lockfile.
 
-### W2. Unused import
+### W2. Unused import — ✅ FIXED
 - **File:** `src/components/pages/home.tsx:7`
 - **Issue:** `LinkedinIcon` is imported but never used.
+- **Status:** Fixed. Added a LinkedIn entry to `socialLinks` in `home.tsx` using `siteConfig.linkedin`, and updated `portfolio-data.ts` to the full `https://www.linkedin.com/in/manas-ranjan-dikshit/`.
 
 ### W3. Hook dependency warnings (`react-hooks/exhaustive-deps`)
 - `src/components/pages/home.tsx:387` — `useCallback` missing dep `router`.
