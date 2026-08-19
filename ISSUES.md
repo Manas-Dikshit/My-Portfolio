@@ -10,11 +10,12 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - **Contrast:** The todo API correctly checks `role === "AUTHOR"` (`todo/route.ts:39`).
 - **Fix:** Restrict to AUTHOR or the entry owner (`entry.userId === session.user.id`).
 
-### 2. Guestbook POST unvalidated input
+### 2. Guestbook POST unvalidated input — ✅ FIXED
 - **File:** `src/app/api/guestbook/route.ts:53`
-- **Issue:** No length cap and no rate limiting. Content is stored as-is.
-- **Note:** No `dangerouslySetInnerHTML` is used to render it, so stored-XSS risk is low.
-- **Extra:** The guestbook is disabled in the UI (`feature/guestbook.tsx` is a hardcoded "currently unavailable" placeholder), so the POST/DELETE surface is dead-but-live code.
+- **Status:** Fixed. Added a `typeof content !== "string"` guard, a `MAX_CONTENT_LENGTH = 500` cap, and an in-memory per-user rate limiter (5 posts / 60s, returns 429). Error shape normalized to `{ success, message }`.
+- **Remaining:** The guestbook is disabled in the UI (`feature/guestbook.tsx` is a hardcoded "currently unavailable" placeholder), so the POST/DELETE surface is dead-but-live code. Rebuild the UI to actually use it.
+- **Rate limiter caveat:** In-memory is best-effort across serverless instances. Upgrade to a shared store (Redis/DB) if you deploy multiple instances or abuse becomes an issue.
+- **Note:** Stored-XSS was already mitigated (React auto-escapes, no `dangerouslySetInnerHTML`); skip a sanitizer unless the UI is rebuilt with raw HTML.
 
 ### 3. `BETTER_AUTH_SECRET!` non-null assertion
 - **File:** `src/lib/auth.ts:14`
@@ -81,3 +82,6 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - **#4** Broken `next-auth` import
 
 Then: #3, #5, #6, #8.
+
+**Done:**
+- **#2** Guestbook POST validation (fixed).
