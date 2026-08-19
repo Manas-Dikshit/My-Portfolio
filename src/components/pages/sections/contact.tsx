@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/terminal";
 import { Button } from "@/components/ui/button";
 import { Send, X } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { getEmail } from "@/config/site";
 import SectionHeading from "@/components/section-heading";
 
 export default function Contact() {
@@ -35,7 +35,7 @@ export default function Contact() {
     if (!canSend) return;
     try {
       setStatus("sending");
-      globalThis.location.href = `mailto:${siteConfig.email}?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
+      globalThis.location.href = `mailto:${getEmail()}?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
         name || "Anonymous",
       )}&body=${encodeURIComponent(message)}%0A%0Afrom:%20${encodeURIComponent(email)}`;
       setStatus("sent");

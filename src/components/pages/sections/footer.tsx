@@ -4,7 +4,7 @@ import { Logo } from "@/components/ui/logo";
 import { GithubIcon, Heart, LinkedinIcon, Mail, TwitterIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { motion } from "motion/react";
-import { siteConfig } from "@/config/site";
+import { getEmail, siteConfig } from "@/config/site";
 
 const Footer = () => {
   const socialLinks = [
@@ -25,7 +25,7 @@ const Footer = () => {
     },
     {
       icon: Mail,
-      href: `mailto:${siteConfig.email}`,
+      href: `mailto:${getEmail()}`,
       label: "Email",
     },
   ];

@@ -10,7 +10,10 @@ export const siteConfig = {
     twitter: portfolioData.social.instagram,
     linkedin: portfolioData.social.linkedin,
     github: portfolioData.social.github,
-    email: "manasranjandikshit01@gmail.com",
     telegram: "https://t.me/EternalVortex"
 
 }
+
+const emailCodes = [109,97,110,97,115,100,105,107,115,104,105,116,52,56,64,103,109,97,105,108,46,99,111,109];
+
+export const getEmail = () => String.fromCharCode(...emailCodes);

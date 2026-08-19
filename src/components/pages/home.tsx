@@ -1,6 +1,6 @@
 "use client";
 
-import { siteConfig } from "@/config/site";
+import { getEmail, siteConfig } from "@/config/site";
 import useScreenSize from "@/hooks/use-screen-size";
 import type { Song } from "@/types";
 import { useIsClient } from "@uidotdev/usehooks";
@@ -118,7 +118,7 @@ const slideInBottom: Variants = {
 
 const socialLinks = [
   { icon: GithubIcon, label: "Github", link: `${siteConfig.github}/portfolio` },
-  { icon: Mail, label: "Email", link: `mailto:${siteConfig.email}` },
+  { icon: Mail, label: "Email", link: `mailto:${getEmail()}` },
   { icon: TwitterIcon, label: "Twitter", link: siteConfig.twitter },
 ];
 

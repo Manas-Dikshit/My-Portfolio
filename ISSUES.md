@@ -62,9 +62,10 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - **File:** `netlify.toml:4`
 - **Issue:** `functions = "netlify/functions"` points to a non-existent directory; `publish = ".next"` with no `@netlify/plugin-nextjs` plugin → Next.js won't deploy correctly on Netlify.
 
-### 13. Two different emails
+### 13. Two different emails — ✅ FIXED
 - **Files:** `src/config/site.ts:13` (`manasranjandikshit01@gmail.com`) vs `src/lib/portfolio-data.ts:25` (`manasdikshit48@gmail.com`).
 - **Issue:** JSON-LD in `layout.tsx:7` uses `portfolioData.contact.email`; the site config exposes the other. Confusing/inconsistent.
+- **Status:** Fixed. Single preferred email `manasdikshit48@gmail.com` is now the only one in the codebase. It's exposed via `getEmail()` in `site.ts` which decodes it from char codes at runtime, so it never appears as plaintext in the HTML/JS bundle. All `mailto:` links (footer, home, contact) use `getEmail()`, and the email was removed from the JSON-LD structured data in `layout.tsx` (the main crawlable scrape vector).
 
 ### 14. Secret hygiene
 - **Status:** Good. Real `.env` is gitignored (confirmed via `git check-ignore`); only `.env.example` is tracked.

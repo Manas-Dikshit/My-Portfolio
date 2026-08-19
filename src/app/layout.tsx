@@ -4,7 +4,6 @@ const structuredData = {
   "@type": "Person",
   "name": portfolioData.personal.name,
   "url": siteConfig.url,
-  "email": portfolioData.contact.email,
   "jobTitle": portfolioData.personal.title,
   "description": portfolioData.personal.bio,
   "sameAs": [
