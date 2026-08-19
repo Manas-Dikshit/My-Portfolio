@@ -77,6 +77,31 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - `as any` casts at `src/app/api/github/route.ts:314`, `src/components/pages/sections/projects.tsx:22-23`, `src/components/ui/playdate-console.tsx:219`.
 - `src/lib/constant.ts` is an empty, unused file.
 
+## Build Warnings / Errors
+
+### W1. Turbopack workspace root inference
+- **Issue:** `next build --turbopack` warns that it inferred the wrong workspace root (`C:\Users\manas\package-lock.json`) because multiple lockfiles were detected. Set `turbopack.root` in `next.config.*` or remove the stray lockfile.
+
+### W2. Unused import
+- **File:** `src/components/pages/home.tsx:7`
+- **Issue:** `LinkedinIcon` is imported but never used.
+
+### W3. Hook dependency warnings (`react-hooks/exhaustive-deps`)
+- `src/components/pages/home.tsx:387` — `useCallback` missing dep `router`.
+- `src/components/snake-game.tsx:208` — `useCallback` missing dep `playEatFood`.
+- `src/components/snake-game.tsx:250` — `useEffect` missing deps `initGame` and `snake.length`.
+- `src/components/ui/logo.tsx:107` — `useEffect` missing deps `controls`, `initialAnimation`, `startAnimation`.
+- `src/components/ui/particles.tsx:236` — `useEffect` missing dep `particleColors`.
+- `src/components/ui/typewriter.tsx:99` — `useEffect` missing dep `initialDelay`.
+
+### W4. Better-Auth default secret
+- **File:** `src/lib/auth.ts:14` (ties to #3)
+- **Issue:** `BETTER_AUTH_SECRET` is not set, so better-auth falls back to its default secret — fails during page-data collection / server runtime. Runtime warning, does not fail the build.
+
+### W5. GitHub API 401
+- **File:** `src/app/api/github/route.ts`
+- **Issue:** GitHub stats fetch returns 401 (`GITHUB_TOKEN` missing/invalid). Runtime error, does not fail the build.
+
 ## Priority
 
 **Highest:**
