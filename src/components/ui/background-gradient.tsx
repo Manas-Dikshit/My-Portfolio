@@ -1,7 +1,7 @@
 const colorSchemes = {
   blue: {
-    background: "#F8FAFF",
-    circles: ["#EEF5FF", "#E4EDFF", "#F2F0FF", "#E4EDFF", "#DCE8FF", "#EEF5FF"],
+    background: "#EEF4FF",
+    circles: ["#CBDDFF", "#A9C4F5", "#8FB0EC", "#B9CCF7", "#7F9FE0", "#D6E4FF"],
   },
   sunset: {
     background: "#FED7AA",
