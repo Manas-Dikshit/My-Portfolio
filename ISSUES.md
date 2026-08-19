@@ -87,13 +87,14 @@ Investigation of the `portfolio` codebase (Next.js 15 + Prisma 7 + better-auth).
 - **Issue:** `LinkedinIcon` is imported but never used.
 - **Status:** Fixed. Added a LinkedIn entry to `socialLinks` in `home.tsx` using `siteConfig.linkedin`, and updated `portfolio-data.ts` to the full `https://www.linkedin.com/in/manas-ranjan-dikshit/`.
 
-### W3. Hook dependency warnings (`react-hooks/exhaustive-deps`)
+### W3. Hook dependency warnings — ✅ FIXED
 - `src/components/pages/home.tsx:387` — `useCallback` missing dep `router`.
 - `src/components/snake-game.tsx:208` — `useCallback` missing dep `playEatFood`.
 - `src/components/snake-game.tsx:250` — `useEffect` missing deps `initGame` and `snake.length`.
 - `src/components/ui/logo.tsx:107` — `useEffect` missing deps `controls`, `initialAnimation`, `startAnimation`.
 - `src/components/ui/particles.tsx:236` — `useEffect` missing dep `particleColors`.
 - `src/components/ui/typewriter.tsx:99` — `useEffect` missing dep `initialDelay`.
+- **Status:** Fixed. All deps added; `typewriter.tsx` `texts` wrapped in `useMemo`. `eslint` now passes clean on all files.
 
 ### W4. Better-Auth default secret
 - **File:** `src/lib/auth.ts:14` (ties to #3)
