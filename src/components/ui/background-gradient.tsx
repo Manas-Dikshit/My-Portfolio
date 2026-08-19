@@ -1,7 +1,7 @@
 const colorSchemes = {
   blue: {
-    background: "#60A5FA",
-    circles: ["#4E71FF", "#A78BFA", "#0065F8", "#3B82F6", "#0F2F65", "#679EF8"],
+    background: "#F8FAFF",
+    circles: ["#EEF5FF", "#E4EDFF", "#F2F0FF", "#E4EDFF", "#DCE8FF", "#EEF5FF"],
   },
   sunset: {
     background: "#FED7AA",
@@ -52,8 +52,8 @@ const colorSchemes = {
     circles: ["#F59E0B", "#10B981", "#EC4899", "#14B8A6", "#EAB308", "#06B6D4"],
   },
   ember: {
-    background: "#431407",
-    circles: ["#F97316", "#EA580C", "#FB923C", "#FDBA74", "#DC2626", "#FED7AA"],
+    background: "#05070D",
+    circles: ["#0B1220", "#111C3A", "#172B5C", "#0B1220", "#111C3A", "#2A4A8F"],
   },
   arctic: {
     background: "#F0F9FF",
