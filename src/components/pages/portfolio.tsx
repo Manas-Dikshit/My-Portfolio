@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { BackgroundNoise } from "../shared/backgrounds";
 import { IntroSplash } from "../shared/intro-splash";
 import Navbar from "./sections/navbar";
