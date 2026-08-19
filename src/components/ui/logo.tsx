@@ -38,6 +38,15 @@ export function Animation({
   const [isAnimating, setIsAnimating] = useState(false);
   const currentLoopRef = useRef(0);
   const animationCompleteCountRef = useRef(0);
+  const startedRef = useRef(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const total = paths?.length ?? 0;
   const perPath = total > 0 ? Math.max(0, animationTime) / total : 0;
