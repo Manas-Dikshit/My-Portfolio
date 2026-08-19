@@ -15,7 +15,7 @@ export const portfolioData = {
 
     social: {
         github: "https://github.com/Manas-Dikshit",
-        linkedin: "www.linkedin.com/in/manas-ranjan-dikshit",
+        linkedin: "https://www.linkedin.com/in/manas-ranjan-dikshit/",
         instagram: "https://www.instagram.com/manasss01_?igsh=aXYxZXdjN3IwMzY3",
         leetcode: "https://leetcode.com/u/Manas-Ranjan-Dikshit/",
         gfg: "https://www.geeksforgeeks.org/user/manasranjanunnu/?_gl=1*1wbf0uv*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwyvfDBhDYARIsAItzbZE-FX4nWTYuPWPMIr4IoFWDGv_cudSq-byKTcFjK_3bt2uEh91BMvYaAuGnEALw_wcB&gbraid=0AAAAAC9yBkDG2XR0ViHst6xOZZ5uidrTw"

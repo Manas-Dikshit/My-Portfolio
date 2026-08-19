@@ -120,6 +120,7 @@ const socialLinks = [
   { icon: GithubIcon, label: "Github", link: `${siteConfig.github}/portfolio` },
   { icon: Mail, label: "Email", link: `mailto:${getEmail()}` },
   { icon: TwitterIcon, label: "Twitter", link: siteConfig.twitter },
+  { icon: LinkedinIcon, label: "LinkedIn", link: siteConfig.linkedin },
 ];
 
 const MainScreen: React.FC<{
