@@ -324,7 +324,7 @@ const OverviewContent = ({ data }: { data?: GitHubStatsResponse }) => {
 
             <div className="mt-4 flex items-center justify-between">
               <div className="flex -space-x-2">
-                {data?.followers.nodes.slice(0, 5).map((follower, i) => (
+                {data?.followers?.nodes?.slice(0, 5).map((follower, i) => (
                   <motion.img
                     key={follower.login}
                     initial={{ opacity: 0, scale: 0 }}
@@ -449,6 +449,8 @@ const ActivityContent = ({ data }: { data?: GitHubStatsResponse }) => {
     { length: currentYear - GITHUB_JOIN_YEAR + 1 },
     (_, i) => GITHUB_JOIN_YEAR + i,
   ).reverse();
+
+  const isDark = resolvedTheme !== "light";
 
   const contributionData =
     data?.contributionsCollection?.contributionCalendar?.weeks
@@ -591,7 +593,7 @@ const InsightsContent = ({ data }: { data?: GitHubStatsResponse }) => {
     },
     {
       label: "Best Day",
-      value: data?.highestCommitDay.count ?? 0,
+      value: data?.highestCommitDay?.count ?? 0,
       unit: "commits",
       icon: Target,
     },
