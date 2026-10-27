@@ -77,6 +77,24 @@ export const portfolioData = {
 
     projects: [
         {
+            title: "Messenger Automation – Automated Birthday SMS System",
+            description:
+                "•\tEngineered a Python 3.12 automation system integrating GitHub Actions, Android SMS Gateway REST API, and CSV-based contact management to schedule personalized SMS delivery directly through a user's SIM card. Implemented template rendering, delivery polling, persistent state management, duplicate-send prevention, exponential backoff, and timezone-aware scheduling for reliable message orchestration.",
+            image: "/Messengerautomation.png",
+            technologies: [
+                "Python",
+                "GitHub Actions",
+                "REST API",
+                "PyTest",
+                "CI/CD",
+                "GitHub Secrets",
+                "CSV",
+            ],
+            githubUrl: "https://github.com/Manas-Dikshit/Messenger-Automation",
+            date: "Oct, 2026",
+            status: "completed",
+        },
+        {
             title: "Neutrino AI – AI-powered Web App (HackVerse Winner)",
             description: "•\tDeveloped and deployed an AI-powered health assistant with chatbot, diet planner, and exercise mentor features, serving 500+ users via Django REST APIs and Vercel.",
             image: "/neutrinoai.png",
