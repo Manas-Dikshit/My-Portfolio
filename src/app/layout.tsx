@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   title: siteConfig.title,
   description: siteConfig.description,
   metadataBase: new URL(siteConfig.url),
+  icons: {
+    icon: "/webicon.png",
+    shortcut: "/webicon.png",
+    apple: "/webicon.png",
+  },
   keywords: [
     "portfolio",
     "developer portfolio",
