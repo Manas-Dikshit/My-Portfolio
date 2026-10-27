@@ -97,6 +97,14 @@ model Todo {
   @@map("todo")
 }
 
+// single-row portfolio view counter
+model PageView {
+  id    String @id @default("site")
+  count Int    @default(0)
+
+  @@map("page_view")
+}
+
 enum Role {
   GUEST
   AUTHOR

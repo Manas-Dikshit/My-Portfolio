@@ -1,65 +1,34 @@
-import env from "@/config/env";
-import axios from "axios";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export const revalidate = 0
 
+const EMPTY_STATS = {
+  pageviews: 0,
+  visitors: 0,
+  visits: 0,
+  bounces: 0,
+  totaltime: 0,
+  comparison: {
+    pageviews: 0,
+    visitors: 0,
+    visits: 0,
+    bounces: 0,
+    totaltime: 0,
+  },
+}
+
+// every portfolio open bumps the single counter row and returns the current count
 export async function GET() {
-    const startAt = 1759820400000;
-    const endAt = Date.now();
-
-    try {
-        if (!env.NEXT_PUBLIC_UMAMI_WEBSITE_ID || !env.UMAMI_API_KEY) {
-            // Graceful fallback when Umami isn't configured
-            const data = {
-                pageviews: 0,
-                visitors: 0,
-                visits: 0,
-                bounces: 0,
-                totaltime: 0,
-                comparison: {
-                    pageviews: 0,
-                    visitors: 0,
-                    visits: 0,
-                    bounces: 0,
-                    totaltime: 0,
-                },
-            };
-            return NextResponse.json({ success: true, data });
-        }
-        const res = await axios.get(
-            `https://api.umami.is/v1/websites/${env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}/stats?startAt=${startAt}&endAt=${endAt}`,
-            {
-                headers: {
-                    "x-umami-api-key": env.UMAMI_API_KEY,
-                    "Accept": "application/json",
-
-                },
-
-            }
-        );
-
-
-
-        const data = res.data;
-        return NextResponse.json({ success: true, data });
-    } catch (err) {
-        console.log("Error fetching website stats:", err);
-        // Graceful fallback on runtime errors
-        const data = {
-            pageviews: 0,
-            visitors: 0,
-            visits: 0,
-            bounces: 0,
-            totaltime: 0,
-            comparison: {
-                pageviews: 0,
-                visitors: 0,
-                visits: 0,
-                bounces: 0,
-                totaltime: 0,
-            },
-        };
-        return NextResponse.json({ success: true, data });
-    }
+  try {
+    const view = await prisma.pageView.upsert({
+      where: { id: "site" },
+      create: { id: "site" },
+      update: { count: { increment: 1 } },
+    });
+    return NextResponse.json({ success: true, data: { ...EMPTY_STATS, pageviews: view.count } });
+  } catch (err) {
+    console.error("Failed to count portfolio view:", (err as Error).message);
+    return NextResponse.json({ success: true, data: EMPTY_STATS });
+  }
 }
