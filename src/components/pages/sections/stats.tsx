@@ -52,7 +52,7 @@ import { useTheme } from "next-themes";
 import dayjs from "dayjs";
 import { portfolioData } from "@/lib/portfolio-data";
 
-const GITHUB_JOIN_YEAR = 2023;
+const GITHUB_JOIN_YEAR = 2024;
 
 const TAB_CONTENT = [
   { title: "Overview", icon: BarChart3 },
@@ -186,7 +186,7 @@ const OverviewContent = ({ data }: { data?: GitHubStatsResponse }) => {
       label: "Stars",
       value: data?.totalStars ?? 0,
       icon: Star,
-      trend: data?.weeklyTrends.stars.value ?? 0,
+      trend: data?.weeklyTrends?.stars?.value ?? 0,
     },
     {
       label: "Contributions",
@@ -421,12 +421,12 @@ const OverviewContent = ({ data }: { data?: GitHubStatsResponse }) => {
             <div key={skill.name} className="space-y-1">
               <div className="flex items-center justify-between">
                 <span className="text-sm">{skill.name}</span>
-                <span className="text-muted-foreground text-xs">{skill.level}%</span>
+                <span className="text-muted-foreground text-xs">{skill.percentage}%</span>
               </div>
               <div className="bg-muted h-2 rounded-full">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: `${skill.level}%` }}
+                  animate={{ width: `${skill.percentage}%` }}
                   transition={{ delay: i * 0.05, duration: 0.6 }}
                   className="bg-green-400 h-2 rounded-full"
                 />
@@ -451,7 +451,7 @@ const ActivityContent = ({ data }: { data?: GitHubStatsResponse }) => {
   ).reverse();
 
   const contributionData =
-    data?.contributionsCollection.contributionCalendar.weeks
+    data?.contributionsCollection?.contributionCalendar?.weeks
       .flatMap((week) => week.contributionDays)
       .slice(-30)
       .map((day, index) => ({
