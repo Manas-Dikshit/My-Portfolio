@@ -21,12 +21,17 @@ export const IntroSplash = () => {
 
     
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 text-white"
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
       >
-        <Logo className="w-28 sm:w-32 md:w-40 @max-md:w-16" />
+        <img
+          src="/webicon.png"
+          alt="MRD"
+          className="h-24 w-24 rounded-full sm:h-32 sm:w-32 md:h-40 md:w-40"
+        />
+        <Logo className="mt-1 text-3xl md:text-5xl" />
       </motion.div>
 
 

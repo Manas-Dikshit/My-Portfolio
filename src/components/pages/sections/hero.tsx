@@ -72,22 +72,15 @@ const Hero = () => {
               className="font-incognito mb-4 text-3xl leading-tight font-semibold md:text-4xl lg:text-6xl"
             >
               <span className="text-foreground">Hey, I&apos;m </span>
-              <span className="text-[#8cc2ff] italic">
-                <span className="inline-flex flex-col items-center">
-                  <img
-                    src="/webicon.png"
-                    alt="MRD"
-                    className="mb-2 h-20 w-20 md:h-28 md:w-28"
-                  />
-                  <Typewriter
-                    // show short and full name variants
-                    text={["MRD", "Manas", portfolioData.personal.name]}
-                    speed={85}
-                    waitTime={1500}
-                    deleteSpeed={40}
-                    cursorChar="|"
-                  />
-                </span>
+              <span className="relative text-[#8cc2ff] italic">
+                <Typewriter
+                  // show short and full name variants
+                  text={["MRD", "Manas", portfolioData.personal.name]}
+                  speed={85}
+                  waitTime={1500}
+                  deleteSpeed={40}
+                  cursorChar="|"
+                />
               </span>
             </motion.h1>
 
