@@ -58,12 +58,12 @@ export const portfolioData = {
             technologies: ["Java", "GitHub", "SpringBoot", "Frontend", "Apache"]
         },
         {
-            position: "Web Development Intern",
-            company: "Zidio pvt ltd",
-            period: "2025(Jan)- 2025(Feb)",
-            icon: "fas fa-code",
-            description: "•	Resolved critical bugs and developed high-performance RESTful APIs in Java & Spring Boot, enhancing backend efficiency by 30% through team collaboration and optimized database integration.",
-            technologies: ["HTML", "CSS", "SASS", "JavaScript", "Spring"]
+            position: "Technical Intern",
+            company: "The Good Shelf",
+            period: "2026(Jul)- 2026(Oct) · Bengaluru (On-site)",
+            icon: "fas fa-map-marker-alt",
+            description: "•\tDeveloped and maintained a Store Locator using Next.js, TypeScript, Tailwind CSS, Leaflet.js, and Google Places API. •\tImplemented interactive map-based store discovery, location-based search, and geospatial visualization. •\tWrote and maintained unit tests using Vitest to improve component reliability and code quality. •\tAutomated email workflows and managed large-scale email operations using Zoho (300–400 emails). •\tCreated and maintained technical documentation and workflow documentation using Notion. •\tWorked on frontend integration, API consumption, data handling, and UI responsiveness. •\tContributed to workflow optimization, technical automation, and application maintenance.",
+            technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Leaflet.js", "Google Places API", "Vitest", "Zoho", "Notion"]
         },
         {
             position: "Student Ambassador",
