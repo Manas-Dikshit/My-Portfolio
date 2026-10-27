@@ -29,7 +29,7 @@ export const IntroSplash = () => {
         <img
           src="/webicon-cutout.png"
           alt="MRD"
-          className="h-24 w-24 rounded-full sm:h-32 sm:w-32 md:h-40 md:w-40"
+          className="h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40"
         />
         <Logo className="mt-1 text-3xl md:text-5xl" />
       </motion.div>
