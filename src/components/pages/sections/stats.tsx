@@ -548,15 +548,16 @@ const ActivityContent = ({ data }: { data?: GitHubStatsResponse }) => {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#262626"
+              stroke={isDark ? "#262626" : "#e4e4e4"}
               opacity={0.2}
             />
             <XAxis dataKey="day" stroke="#525252" fontSize={10} />
             <YAxis stroke="#525252" fontSize={10} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#0a0a0a",
-                border: "1px solid #262626",
+                backgroundColor: isDark ? "#0a0a0a" : "#fafafa",
+                border: `1px solid ${isDark ? "#262626" : "#e4e4e4"}`,
+                color: isDark ? "#fafafa" : "#171717",
                 borderRadius: "8px",
                 fontSize: "12px",
               }}
