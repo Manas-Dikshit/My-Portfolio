@@ -90,6 +90,7 @@ export const portfolioData = {
                 "GitHub Secrets",
                 "CSV",
             ],
+            liveUrl: "https://github.com/Manas-Dikshit/Messenger_Automation",
             githubUrl: "https://github.com/Manas-Dikshit/Messenger_Automation",
             date: "Oct, 2026",
             status: "completed",
