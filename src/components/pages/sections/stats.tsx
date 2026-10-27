@@ -864,11 +864,9 @@ export default function Stats() {
             strength={screenSize.lessThan("md") ? 8 : 15}
           />
 
-          <div className="no-scrollbar relative h-screen w-full overflow-y-auto">
-            <div
-              className="absolute inset-0"
-              style={{ filter: "url(#gooey-filter)" }}
-            >
+          <div className="no-scrollbar relative w-full">
+            {/* Gooey backing — in flow so it sizes to the content */}
+            <div style={{ filter: "url(#gooey-filter)" }}>
               <div className="flex w-full">
                 {TAB_CONTENT.map((_, index) => (
                   <div key={index} className="relative h-10 flex-1 md:h-12">
@@ -919,7 +917,7 @@ export default function Stats() {
             </div>
 
             {/*  text overlay */}
-            <div className="relative flex w-full">
+            <div className="absolute inset-x-0 top-0 flex w-full">
               {TAB_CONTENT.map((tab, index) => (
                 <button
                   key={index}
