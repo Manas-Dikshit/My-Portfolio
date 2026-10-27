@@ -2,7 +2,6 @@ import env from "@/config/env";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-export const cache = "no-cache"
 export const revalidate = 0
 
 export async function GET() {
