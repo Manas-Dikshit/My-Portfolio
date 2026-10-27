@@ -27,7 +27,7 @@ export const IntroSplash = () => {
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
       >
         <img
-          src="/webicon.png"
+          src="/webicon-cutout.png"
           alt="MRD"
           className="h-24 w-24 rounded-full sm:h-32 sm:w-32 md:h-40 md:w-40"
         />
