@@ -7,9 +7,9 @@ export const portfolioData = {
         bio: "𝑺𝒐𝒇𝒕𝒘𝒂𝒓𝒆 𝑬𝒏𝒈𝒊𝒏𝒆𝒆𝒓 | 𝑱𝒂𝒗𝒂 & 𝑴𝒊𝒄𝒓𝒐𝒔𝒆𝒓𝒗𝒊𝒄𝒆𝒔 | 𝑨𝑰-𝑰𝒏𝒕𝒆𝒈𝒓𝒂𝒕𝒆𝒅 𝑺𝒚𝒔𝒕𝒆𝒎𝒔 | 𝑶𝒑𝒆𝒏 𝑺𝒐𝒖𝒓𝒄𝒆 𝑪𝒐𝒏𝒕𝒓𝒊𝒃𝒖𝒕𝒐𝒓 | 5× 𝑯𝒂𝒄𝒌𝒂𝒕𝒉𝒐𝒏 𝑾𝒊𝒏𝒏𝒆𝒓",
         cvUrl: "/Manas_Ranjan_Dikshit.pdf",
         stats: {
-            experience: "1+",
-            projects: "10+",
-            clients: "15+"
+            experience: "2+",
+            projects: "25+",
+            clients: "20+"
         }
     },
 
