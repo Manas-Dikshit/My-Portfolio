@@ -24,6 +24,13 @@ export const githubApi = {
 
 
 
+export const achievepicsApi = {
+    getImages: async (): Promise<string[]> => {
+        const res = await api.get<ApiResponse<string[]>>("/achievepics");
+        return res.data.data || [];
+    },
+};
+
 export const guestbookApi = {
     getEntries: async () => {
         const res = await api.get<ApiResponse<GuestbookEntry[]>>("/guestbook");
