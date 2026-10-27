@@ -23,7 +23,7 @@ export async function GET() {
   try {
     const view = await prisma.pageView.upsert({
       where: { id: "site" },
-      create: { id: "site" },
+      create: { id: "site", count: 1 },
       update: { count: { increment: 1 } },
     });
     return NextResponse.json({ success: true, data: { ...EMPTY_STATS, pageviews: view.count } });
