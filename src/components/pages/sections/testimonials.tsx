@@ -1,203 +1,88 @@
 "use client";
 
-// ? Just Dummy testimonial
-
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from "react";
 import { portfolioData } from "@/lib/portfolio-data";
 
 import SectionHeading from "@/components/section-heading";
 
 const SQRT_5000 = Math.sqrt(5000);
 
+// achievement photos shown as one unified gallery (public/achievepics)
+const achievementImages = [
+  "/achievepics/secretary.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.15%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.16%20PM%20(1).jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.16%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.17%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.18%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.19%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.20%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.21%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.23%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.24%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.25%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.27%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.33%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.35%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.41%20PM%20(1).jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.41%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.42%20PM%20(1).jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.42%20PM%20(2).jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.42%20PM.jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.43%20PM%20(1).jpeg",
+  "/achievepics/WhatsApp%20Image%202026-10-27%20at%209.08.43%20PM.jpeg",
+];
 
-
-const achievementsAsTestimonials = portfolioData.achievements.map((a, idx) => ({
-  tempId: 1000 + idx,
-  testimonial: a.title,
-  by: a.organization,
-  imgSrc: `https://i.pravatar.cc/150?img=${(idx % 70) + 21}`,
-}));
-
-interface TestimonialCardProps {
-  position: number;
-  testimonial: {
-    tempId: number;
-    testimonial: string;
-    by: string;
-    imgSrc: string;
-  };
-  handleMove: (steps: number) => void;
-  cardSize: number;
-}
-
-const TestimonialCard: React.FC<TestimonialCardProps> = ({
-  position,
-  testimonial,
-  handleMove,
-  cardSize,
-}) => {
-  const isCenter = position === 0;
-
-  // Accessibility: role, tabIndex, keyboard
-  // Extract ternaries
-  let translateY = -15;
-  if (isCenter) translateY = -65;
-  else if (position % 2) translateY = 15;
-  let rotate = -2.5;
-  if (isCenter) rotate = 0;
-  else if (position % 2) rotate = 2.5;
-  const boxShadow = isCenter
-    ? "0px 8px 0px 4px hsl(var(--border))"
-    : "0px 0px 0px 0px transparent";
-  return (
-    <button
-      type="button"
-      onClick={() => handleMove(position)}
-      onKeyDown={e => {
-        if (e.key === "Enter" || e.key === " ") handleMove(position);
-      }}
-      className={cn(
-        "absolute top-1/2 left-1/2 cursor-pointer border-2 p-8 transition-all duration-500 ease-in-out",
-        isCenter
-          ? "bg-primary text-primary-foreground border-primary z-10"
-          : "bg-card text-card-foreground border-border hover:border-primary/50 z-0",
-      )}
-      style={{
-        width: cardSize,
-        height: cardSize,
-        clipPath: `polygon(50px 0%, calc(100% - 50px) 0%, 100% 50px, 100% 100%, calc(100% - 50px) 100%, 50px 100%, 0 100%, 0 0)`,
-        transform: `
-          translate(-50%, -50%) 
-          translateX(${(cardSize / 1.5) * position}px)
-          translateY(${translateY}px)
-          rotate(${rotate}deg)
-        `,
-        boxShadow,
-      }}
-    >
-      <span
-        className="bg-border absolute block origin-top-right rotate-45"
-        style={{
-          right: -2,
-          top: 48,
-          width: SQRT_5000,
-          height: 2,
-        }}
-      />
-      <img
-        src={testimonial.imgSrc}
-        alt={`${testimonial.by.split(",")[0]}`}
-        className="bg-muted mb-4 h-14 w-12 object-cover object-top"
-        style={{
-          boxShadow: "3px 3px 0px hsl(var(--background))",
-        }}
-      />
-      <h3
-        className={cn(
-          "text-base font-medium sm:text-xl",
-          isCenter ? "text-primary-foreground" : "text-foreground",
-        )}
-      >
-        &quot;{testimonial.testimonial}&quot;
-      </h3>
-      <p
-        className={cn(
-          "absolute right-8 bottom-8 left-8 mt-2 text-sm italic",
-          isCenter ? "text-primary-foreground/80" : "text-muted-foreground",
-        )}
-      >
-        - {testimonial.by}
-      </p>
-    </button>
-  );
-};
+// keeps the original testimonial-card frame: angled top corners + diagonal accent line
+const CARD_CLIP_PATH =
+  "polygon(50px 0%, calc(100% - 50px) 0%, 100% 50px, 100% 100%, calc(100% - 50px) 100%, 50px 100%, 0 100%, 0 0)";
 
 export const Testimonials: React.FC = () => {
-  const [cardSize, setCardSize] = useState(365);
-  // Show only user's achievements (awards) as testimonials
-  const [testimonialsList, setTestimonialsList] = useState([
-    ...achievementsAsTestimonials,
-  ]);
-
-  const handleMove = (steps: number) => {
-    const newList = [...testimonialsList];
-    if (steps > 0) {
-      for (let i = steps; i > 0; i--) {
-        const item = newList.shift();
-        if (!item) return;
-        newList.push({ ...item, tempId: Math.random() });
-      }
-    } else {
-      for (let i = steps; i < 0; i++) {
-        const item = newList.pop();
-        if (!item) return;
-        newList.unshift({ ...item, tempId: Math.random() });
-      }
-    }
-    setTestimonialsList(newList);
-  };
-
-  useEffect(() => {
-    const updateSize = () => {
-      const { matches } = globalThis.matchMedia("(min-width: 640px)");
-      setCardSize(matches ? 365 : 290);
-    };
-
-    updateSize();
-    globalThis.addEventListener("resize", updateSize);
-    return () => globalThis.removeEventListener("resize", updateSize);
-  }, []);
-
   return (
-    <SectionHeading
-      text="Achievements"
-      id="testimonials"
-      className="h-[600px] overflow-hidden"
-    >
+    <SectionHeading text="Achievements" id="testimonials">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.06)_1px,transparent_1px)] [mask-image:linear-gradient(to_bottom,black,transparent_85%)] bg-[size:18px_18px] dark:bg-[linear-gradient(to_right,rgba(255,255,255,.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.06)_1px,transparent_1px)]" />
       </div>
 
-      {testimonialsList.map((testimonial, index) => {
-        const position =
-          testimonialsList.length % 2
-            ? index - (testimonialsList.length + 1) / 2
-            : index - testimonialsList.length / 2;
-        return (
-          <TestimonialCard
-            key={testimonial.tempId}
-            testimonial={testimonial}
-            handleMove={handleMove}
-            position={position}
-            cardSize={cardSize}
-          />
-        );
-      })}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-        <button
-          onClick={() => handleMove(-1)}
-          className={cn(
-            "flex h-14 w-14 items-center justify-center text-2xl transition-colors",
-            "bg-background border-border hover:bg-primary hover:text-primary-foreground border-2",
-            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-          )}
-          aria-label="Previous testimonial"
-        >
-          <ChevronLeft />
-        </button>
-        <button
-          onClick={() => handleMove(1)}
-          className={cn(
-            "flex h-14 w-14 items-center justify-center text-2xl transition-colors",
-            "bg-background border-border hover:bg-primary hover:text-primary-foreground border-2",
-            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-          )}
-          aria-label="Next testimonial"
-        >
-          <ChevronRight />
-        </button>
+      {/* Gallery — image-only cards, no per-image captions */}
+      <div className="grid grid-cols-2 gap-6 p-8 sm:grid-cols-3 md:grid-cols-4 md:p-12 lg:grid-cols-5 lg:p-16">
+        {achievementImages.map((src) => (
+          <div
+            key={src}
+            className="relative aspect-square border-2 transition-colors duration-500 hover:border-primary/50"
+            style={{ clipPath: CARD_CLIP_PATH }}
+          >
+            <span
+              className="bg-border absolute block origin-top-right rotate-45"
+              style={{ right: -2, top: 48, width: SQRT_5000, height: 2 }}
+            />
+            <img
+              src={src}
+              alt="Achievement photo"
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Unified achievement details — separate from the individual images */}
+      <div className="border-t px-8 py-12 md:px-12 lg:px-16">
+        <ul className="grid gap-x-12 md:grid-cols-2">
+          {portfolioData.achievements.map((a) => (
+            <li
+              key={a.title}
+              className="flex items-baseline justify-between gap-4 border-b py-3"
+            >
+              <span className="text-sm font-medium md:text-base">
+                {a.title}
+              </span>
+              <span className="text-muted-foreground shrink-0 font-mono text-xs">
+                {a.organization} · {a.date}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </SectionHeading>
   );
